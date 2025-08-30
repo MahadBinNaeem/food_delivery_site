@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Food Delivery</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>  <!-- Includes CSRF token for security -->
+    <%= csp_meta_tag %>     <!-- Includes CSP meta tag -->
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbo-track': 'reload', defer: true %>
+  </head>
+  <body>
+    <div id="root"><%= yield %></div>  <!-- This will render the content of each individual view -->
+  </body>
+</html>

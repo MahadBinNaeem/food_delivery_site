@@ -1,0 +1,23 @@
+/* Home page specific styles */
+#react-root {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.restaurants-container {
+  margin-top: 20px;
+}
+
+.restaurants-list {
+  list-style: none;
+  padding: 0;
+}
+
+.restaurant-item {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}

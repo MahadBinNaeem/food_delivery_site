@@ -1,0 +1,23 @@
+{
+  "name": "fooddelivery",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "build": "esbuild app/javascript/application.js --bundle --sourcemap --format=esm --outdir=app/assets/builds --loader:.js=jsx --public-path=/assets",
+    "build:css": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify",
+    "dev:js": "esbuild app/javascript/application.js --bundle --sourcemap --format=esm --outdir=app/assets/builds --loader:.js=jsx --public-path=/assets --watch",
+    "dev:css": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify --watch",
+    "tailwindcss": "tailwindcss"
+  },
+  "dependencies": {
+    "axios": "^1.11.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "esbuild": "^0.25.9",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.12"
+  }
+}
