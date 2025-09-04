@@ -4,7 +4,7 @@ source "https://rubygems.org"
 # Core Rails
 gem "rails", "~> 7.2"
 gem "pg", "~> 1.1"
-gem "puma", "~> 6.0"
+gem "puma", "~> 7.0"
 gem "bootsnap", require: false
 
 # Frontend
