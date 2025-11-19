@@ -31,4 +31,7 @@ gem "sassc-rails"
 gem "rack-cors"
 gem "byebug"
 gem "haml-rails"
-gem 'react_on_rails'
+gem "react_on_rails"
+gem "devise"
+gem "devise-jwt"
+gem "pundit"
