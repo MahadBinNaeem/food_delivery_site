@@ -17,7 +17,6 @@ gem "jbuilder"
 # Development/Test
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ]
-  gem "brakeman", require: false
   gem "rubocop-rails-omakase", require: false
 end
 
@@ -31,4 +30,8 @@ gem "sassc-rails"
 gem "rack-cors"
 gem "byebug"
 gem "haml-rails"
-gem 'react_on_rails'
+gem "react_on_rails", "~> 14.1"
+gem "devise"
+gem "devise-jwt"
+gem "pundit"
+gem "brakeman", require: false

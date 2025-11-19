@@ -1,14 +1,15 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import HomePage from "./components/HomePage";
+import AdminDashboard from "./components/admin/dashboard";
+
 
 const mount = () => {
-  const el = document.getElementById("home");
-  if (el) {
-    createRoot(el).render(<HomePage />);
+  const adminEl = document.getElementById("admin-dashboard");
+  if (adminEl) {
+    const initialData = adminEl.dataset.stats ? JSON.parse(adminEl.dataset.stats) : {};
+    createRoot(adminEl).render(<AdminDashboard initialData={initialData} />);
   }
 };
 
-// Mount on full load and Turbo transitions
 document.addEventListener("turbo:load", mount);
 if (document.readyState !== "loading") mount();

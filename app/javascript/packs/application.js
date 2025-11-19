@@ -1,11 +1,11 @@
-import React from 'react';
+// import React from 'react';
 import { createRoot } from 'react-dom/client';
-import HomePage from '../components/HomePage';
+import Login from "./components/Login";
 
 document.addEventListener('DOMContentLoaded', () => {
-  const container = document.getElementById('react-root');
+  const container = document.getElementById('home');
   if (container) {
     const root = createRoot(container);
-    root.render(<HomePage />);
+    root.render(<Login />);
   }
 });
