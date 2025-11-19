@@ -25,10 +25,8 @@ export default function Login() {
         return;
       }
 
-      // Store JWT token
       localStorage.setItem("token", data.token);
 
-      // Store logged-in user
       localStorage.setItem("user", JSON.stringify(data.user));
 
       alert("Login successful!");
