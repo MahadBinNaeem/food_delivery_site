@@ -56,12 +56,12 @@ class Restaurants::DashboardController < ApplicationController
     orders_relation = Order.where(restaurant_id: current_restaurant.id)
 
     {
-      pending: orders_relation.where(status: 'pending').count,
-      preparing: orders_relation.where(status: 'preparing').count,
-      ready: orders_relation.where(status: 'ready').count,
-      out_for_delivery: orders_relation.where(status: 'out_for_delivery').count,
-      completed_today: orders_relation.where(status: 'completed', created_at: Date.today.beginning_of_day..Date.today.end_of_day).count,
-      cancelled_today: orders_relation.where(status: 'cancelled', created_at: Date.today.beginning_of_day..Date.today.end_of_day).count
+      pending: orders_relation.where(status: "pending").count,
+      preparing: orders_relation.where(status: "preparing").count,
+      ready: orders_relation.where(status: "ready").count,
+      out_for_delivery: orders_relation.where(status: "out_for_delivery").count,
+      completed_today: orders_relation.where(status: "completed", created_at: Date.today.beginning_of_day..Date.today.end_of_day).count,
+      cancelled_today: orders_relation.where(status: "cancelled", created_at: Date.today.beginning_of_day..Date.today.end_of_day).count
     }
   rescue StandardError
     default_orders_data
@@ -74,7 +74,7 @@ class Restaurants::DashboardController < ApplicationController
     total_orders = orders_relation.count
     total_revenue = orders_relation.sum(:total_amount).to_f
     avg_order_value = total_orders.positive? ? (total_revenue / total_orders).round(2) : 0.0
-    completed_orders = orders_relation.where(status: 'completed').count
+    completed_orders = orders_relation.where(status: "completed").count
     completion_rate = total_orders.positive? ? ((completed_orders.to_f / total_orders) * 100).round(1) : 0.0
 
     {
@@ -113,10 +113,10 @@ class Restaurants::DashboardController < ApplicationController
     return [] unless defined?(Order) && defined?(OrderItem)
 
     OrderItem.joins(:order)
-             .where(orders: { restaurant_id: current_restaurant.id, status: 'completed' })
+             .where(orders: { restaurant_id: current_restaurant.id, status: "completed" })
              .group(:menu_item_id)
-             .select('menu_item_id, COUNT(*) as order_count, SUM(quantity * price) as total_revenue')
-             .order('order_count DESC')
+             .select("menu_item_id, COUNT(*) as order_count, SUM(quantity * price) as total_revenue")
+             .order("order_count DESC")
              .limit(5)
              .map do |item|
       {
@@ -132,7 +132,7 @@ class Restaurants::DashboardController < ApplicationController
   def calculate_sales_for_period(start_time, end_time)
     return 0.0 unless defined?(Order)
 
-    Order.where(restaurant_id: current_restaurant.id, status: 'completed', created_at: start_time..end_time)
+    Order.where(restaurant_id: current_restaurant.id, status: "completed", created_at: start_time..end_time)
          .sum(:total_amount)
          .to_f
   rescue StandardError
@@ -144,7 +144,7 @@ class Restaurants::DashboardController < ApplicationController
 
     (6.days.ago.to_date..Date.today).map do |date|
       {
-        day: date.strftime('%a'),
+        day: date.strftime("%a"),
         sales: calculate_sales_for_period(date.beginning_of_day, date.end_of_day)
       }
     end
@@ -157,7 +157,7 @@ class Restaurants::DashboardController < ApplicationController
 
     (5.months.ago.beginning_of_month..Date.today).group_by { |d| d.beginning_of_month }.map do |month, _|
       {
-        month: month.strftime('%b'),
+        month: month.strftime("%b"),
         sales: calculate_sales_for_period(month.beginning_of_month, month.end_of_month)
       }
     end
@@ -168,7 +168,7 @@ class Restaurants::DashboardController < ApplicationController
   def calculate_average_prep_time
     return 0 unless defined?(Order)
 
-    orders_with_prep_time = Order.where(restaurant_id: current_restaurant.id, status: 'completed')
+    orders_with_prep_time = Order.where(restaurant_id: current_restaurant.id, status: "completed")
                                  .where.not(prepared_at: nil)
 
     return 0 if orders_with_prep_time.empty?

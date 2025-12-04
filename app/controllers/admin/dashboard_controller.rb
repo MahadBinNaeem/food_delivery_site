@@ -38,9 +38,9 @@ class Admin::DashboardController < Admin::BaseController
       customers: count_for_role(:customer),
       vendors: count_for_role(:vendor),
       riders: count_for_role(:rider),
-      new_today: User.where('created_at >= ?', Date.today.beginning_of_day).count,
-      new_this_week: User.where('created_at >= ?', Date.today.beginning_of_week).count,
-      new_this_month: User.where('created_at >= ?', Date.today.beginning_of_month).count
+      new_today: User.where("created_at >= ?", Date.today.beginning_of_day).count,
+      new_this_week: User.where("created_at >= ?", Date.today.beginning_of_week).count,
+      new_this_month: User.where("created_at >= ?", Date.today.beginning_of_month).count
     }
   end
 
@@ -49,11 +49,11 @@ class Admin::DashboardController < Admin::BaseController
 
     {
       total: Restaurant.count,
-      pending: Restaurant.where(status: 'pending').count,
-      approved: Restaurant.where(status: 'approved').count,
-      suspended: Restaurant.where(status: 'suspended').count,
-      new_today: Restaurant.where('created_at >= ?', Date.today.beginning_of_day).count,
-      new_this_week: Restaurant.where('created_at >= ?', Date.today.beginning_of_week).count
+      pending: Restaurant.where(status: "pending").count,
+      approved: Restaurant.where(status: "approved").count,
+      suspended: Restaurant.where(status: "suspended").count,
+      new_today: Restaurant.where("created_at >= ?", Date.today.beginning_of_day).count,
+      new_this_week: Restaurant.where("created_at >= ?", Date.today.beginning_of_week).count
     }
   rescue StandardError
     default_restaurant_stats
@@ -64,14 +64,14 @@ class Admin::DashboardController < Admin::BaseController
 
     {
       total: Order.count,
-      pending: Order.where(status: 'pending').count,
-      preparing: Order.where(status: 'preparing').count,
-      out_for_delivery: Order.where(status: 'out_for_delivery').count,
-      completed: Order.where(status: 'completed').count,
-      cancelled: Order.where(status: 'cancelled').count,
-      today: Order.where('created_at >= ?', Date.today.beginning_of_day).count,
-      this_week: Order.where('created_at >= ?', Date.today.beginning_of_week).count,
-      this_month: Order.where('created_at >= ?', Date.today.beginning_of_month).count
+      pending: Order.where(status: "pending").count,
+      preparing: Order.where(status: "preparing").count,
+      out_for_delivery: Order.where(status: "out_for_delivery").count,
+      completed: Order.where(status: "completed").count,
+      cancelled: Order.where(status: "cancelled").count,
+      today: Order.where("created_at >= ?", Date.today.beginning_of_day).count,
+      this_week: Order.where("created_at >= ?", Date.today.beginning_of_week).count,
+      this_month: Order.where("created_at >= ?", Date.today.beginning_of_month).count
     }
   rescue StandardError
     default_orders_stats
@@ -82,9 +82,9 @@ class Admin::DashboardController < Admin::BaseController
 
     {
       total: Order.sum(:total_amount).to_f,
-      today: Order.where('created_at >= ?', Date.today.beginning_of_day).sum(:total_amount).to_f,
-      this_week: Order.where('created_at >= ?', Date.today.beginning_of_week).sum(:total_amount).to_f,
-      this_month: Order.where('created_at >= ?', Date.today.beginning_of_month).sum(:total_amount).to_f,
+      today: Order.where("created_at >= ?", Date.today.beginning_of_day).sum(:total_amount).to_f,
+      this_week: Order.where("created_at >= ?", Date.today.beginning_of_week).sum(:total_amount).to_f,
+      this_month: Order.where("created_at >= ?", Date.today.beginning_of_month).sum(:total_amount).to_f,
       average_order_value: calculate_average_order_value,
       trend: calculate_revenue_trend
     }
@@ -94,7 +94,7 @@ class Admin::DashboardController < Admin::BaseController
 
   def platform_metrics
     {
-      user_growth_rate: calculate_growth_rate(User, 'this_month'),
+      user_growth_rate: calculate_growth_rate(User, "this_month"),
       restaurant_growth_rate: calculate_restaurant_growth_rate,
       order_completion_rate: calculate_order_completion_rate,
       average_delivery_time: calculate_average_delivery_time
@@ -192,7 +192,7 @@ class Admin::DashboardController < Admin::BaseController
 
     (6.days.ago.to_date..Date.today).map do |date|
       {
-        date: date.strftime('%b %d'),
+        date: date.strftime("%b %d"),
         revenue: Order.where(created_at: date.beginning_of_day..date.end_of_day).sum(:total_amount).to_f
       }
     end
@@ -204,11 +204,11 @@ class Admin::DashboardController < Admin::BaseController
     return 0.0 unless model
 
     case period
-    when 'this_month'
-      current = model.where('created_at >= ?', Date.today.beginning_of_month).count
+    when "this_month"
+      current = model.where("created_at >= ?", Date.today.beginning_of_month).count
       previous = model.where(created_at: 1.month.ago.beginning_of_month..1.month.ago.end_of_month).count
-    when 'this_week'
-      current = model.where('created_at >= ?', Date.today.beginning_of_week).count
+    when "this_week"
+      current = model.where("created_at >= ?", Date.today.beginning_of_week).count
       previous = model.where(created_at: 1.week.ago.beginning_of_week..1.week.ago.end_of_week).count
     else
       return 0.0
@@ -224,7 +224,7 @@ class Admin::DashboardController < Admin::BaseController
   def calculate_restaurant_growth_rate
     return 0.0 unless defined?(Restaurant)
 
-    calculate_growth_rate(Restaurant, 'this_month')
+    calculate_growth_rate(Restaurant, "this_month")
   end
 
   def calculate_order_completion_rate
@@ -233,7 +233,7 @@ class Admin::DashboardController < Admin::BaseController
     total = Order.count
     return 0.0 if total.zero?
 
-    completed = Order.where(status: 'completed').count
+    completed = Order.where(status: "completed").count
     ((completed.to_f / total) * 100).round(1)
   rescue StandardError
     0.0
@@ -242,7 +242,7 @@ class Admin::DashboardController < Admin::BaseController
   def calculate_average_delivery_time
     return 0 unless defined?(Order)
 
-    completed_orders = Order.where(status: 'completed').where.not(delivered_at: nil)
+    completed_orders = Order.where(status: "completed").where.not(delivered_at: nil)
     return 0 if completed_orders.empty?
 
     total_time = completed_orders.sum { |order|

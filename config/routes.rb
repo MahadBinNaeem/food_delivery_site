@@ -1,11 +1,11 @@
 Rails.application.routes.draw do
   devise_for :admins, path: "admin"
   devise_for :restaurants, path: "restaurants", controllers: {
-    registrations: 'restaurants/registrations',
-    sessions: 'restaurants/sessions'
+    registrations: "restaurants/registrations",
+    sessions: "restaurants/sessions"
   }
   devise_for :users, controllers: {
-    registrations: 'users/registrations'
+    registrations: "users/registrations"
   }
   root "dashboard#index"
   get "dashboard", to: "dashboard#index"
