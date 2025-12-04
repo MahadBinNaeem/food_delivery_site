@@ -19,7 +19,8 @@ class Restaurants::DashboardController < ApplicationController
       orders: orders_data,
       metrics: metrics_data,
       recent_orders: recent_orders_data,
-      top_items: top_items_data
+      top_items: top_items_data,
+      auth_paths: auth_paths_payload
     }
   end
 
@@ -212,6 +213,12 @@ class Restaurants::DashboardController < ApplicationController
       customer_rating: 0.0,
       completion_rate: 0.0,
       average_prep_time: 0
+    }
+  end
+
+  def auth_paths_payload
+    {
+      logout: helpers.destroy_restaurant_session_path
     }
   end
 end

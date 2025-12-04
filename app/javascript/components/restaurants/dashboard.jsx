@@ -6,7 +6,8 @@ const DEFAULT_DASHBOARD = {
   orders: { pending: 0, preparing: 0, ready: 0, out_for_delivery: 0, completed_today: 0, cancelled_today: 0 },
   metrics: { total_orders: 0, total_revenue: 0, average_order_value: 0, customer_rating: 0, completion_rate: 0, average_prep_time: 0 },
   recent_orders: [],
-  top_items: []
+  top_items: [],
+  auth_paths: {}
 };
 
 function RestaurantDashboard({ initialData = {} }) {
@@ -14,6 +15,8 @@ function RestaurantDashboard({ initialData = {} }) {
   const [dashboard, setDashboard] = useState(hasInitialData ? initialData : DEFAULT_DASHBOARD);
   const [loading, setLoading] = useState(!hasInitialData);
   const [error, setError] = useState(null);
+  const [loggingOut, setLoggingOut] = useState(false);
+  const [logoutError, setLogoutError] = useState(null);
 
   useEffect(() => {
     if (hasInitialData) return;
@@ -45,6 +48,37 @@ function RestaurantDashboard({ initialData = {} }) {
   const sales = dashboard.sales || DEFAULT_DASHBOARD.sales;
   const orders = dashboard.orders || DEFAULT_DASHBOARD.orders;
   const metrics = dashboard.metrics || DEFAULT_DASHBOARD.metrics;
+  const authPaths = dashboard.auth_paths || DEFAULT_DASHBOARD.auth_paths;
+  const logoutPath = authPaths.logout || "/restaurants/sign_out";
+
+  const handleLogout = async () => {
+    if (!logoutPath || loggingOut) return;
+
+    try {
+      setLoggingOut(true);
+      setLogoutError(null);
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+
+      const response = await fetch(logoutPath, {
+        method: "DELETE",
+        headers: {
+          "X-CSRF-Token": csrfToken || "",
+          Accept: "application/json"
+        },
+        credentials: "same-origin"
+      });
+
+      if (response.ok) {
+        window.location.href = "/restaurants/sign_in";
+      } else {
+        setLogoutError("Unable to log out. Please try again.");
+      }
+    } catch {
+      setLogoutError("Unable to log out. Please try again.");
+    } finally {
+      setLoggingOut(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-gray-900 py-12 px-4 sm:px-6 lg:px-8">
@@ -80,6 +114,12 @@ function RestaurantDashboard({ initialData = {} }) {
               <RecentOrders orders={dashboard.recent_orders} />
               <TopItems items={dashboard.top_items} />
             </div>
+
+            <LogoutPanel
+              onLogout={handleLogout}
+              loggingOut={loggingOut}
+              error={logoutError}
+            />
           </>
         )}
       </div>
@@ -346,6 +386,24 @@ function formatDateTime(value) {
 function formatDate(value) {
   if (!value) return null;
   return new Intl.DateTimeFormat(undefined, { month: "long", year: "numeric" }).format(new Date(value));
+}
+
+function LogoutPanel({ onLogout, loggingOut, error }) {
+  return (
+    <section className="rounded-3xl border border-white/10 bg-gradient-to-r from-white/10 via-white/5 to-white/0 p-6 text-center shadow-xl shadow-black/30">
+      <h2 className="text-xl font-semibold text-white">Need a break from managing orders?</h2>
+      <p className="mt-2 text-sm text-gray-300">You can sign back in anytime to continue serving your customers.</p>
+      <button
+        type="button"
+        onClick={onLogout}
+        disabled={loggingOut}
+        className="mt-5 inline-flex items-center justify-center rounded-2xl bg-red-500 px-6 py-3 text-base font-semibold text-white shadow-lg shadow-red-900/40 transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70"
+      >
+        {loggingOut ? "Signing out…" : "Log out"}
+      </button>
+      {error && <p className="mt-3 text-sm text-red-300">{error}</p>}
+    </section>
+  );
 }
 
 export default RestaurantDashboard;

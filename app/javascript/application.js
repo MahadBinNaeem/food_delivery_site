@@ -7,7 +7,7 @@ import RestaurantDashboard from "./components/restaurants/dashboard";
 const mount = () => {
   const adminEl = document.getElementById("admin-dashboard");
   if (adminEl) {
-    const initialData = adminEl.dataset.stats ? JSON.parse(adminEl.dataset.stats) : {};
+    const initialData = adminEl.dataset.dashboard ? JSON.parse(adminEl.dataset.dashboard) : {};
     createRoot(adminEl).render(<AdminDashboard initialData={initialData} />);
   }
 

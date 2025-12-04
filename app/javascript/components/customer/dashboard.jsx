@@ -72,7 +72,7 @@ function CustomerDashboard({ initialData = {} }) {
       });
 
       if (response.ok) {
-        window.location.href = "/";
+        window.location.href = "/users/sign_in";
       } else {
         setLogoutError("Unable to log out. Please try again.");
       }
