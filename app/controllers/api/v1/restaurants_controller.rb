@@ -2,11 +2,7 @@ module Api
   module V1
     class RestaurantsController < ApplicationController
        def index
-        restaurants = [
-          { id: 1, name: "Burger Palace", cuisine: "American" },
-          { id: 2, name: "Pizza Heaven", cuisine: "Italian" },
-          { id: 3, name: "Sushi World", cuisine: "Japanese" }
-        ]
+        restaurants = Restaurant.all
 
         render json: restaurants, status: :ok
       end
