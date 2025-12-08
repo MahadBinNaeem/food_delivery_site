@@ -28,7 +28,11 @@ Rails.application.routes.draw do
     get "dashboard", to: "dashboard#index"
 
     resources :users
-    resources :restaurants
+    resources :restaurants do
+      member do
+        patch :approve
+      end
+    end
     resources :orders
   end
 end

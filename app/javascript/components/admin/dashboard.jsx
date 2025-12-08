@@ -150,18 +150,25 @@ function AdminHeader() {
 
 function OverviewCards({ overview }) {
   const cards = [
-    { label: "Total Users", value: overview.total_users, accent: "from-blue-500/40 to-cyan-500/40", icon: "👥" },
-    { label: "Total Restaurants", value: overview.total_restaurants, accent: "from-orange-500/40 to-amber-500/40", icon: "🍽️" },
-    { label: "Total Orders", value: overview.total_orders, accent: "from-purple-500/40 to-pink-500/40", icon: "📦" },
-    { label: "Total Revenue", value: formatCurrency(overview.total_revenue), accent: "from-emerald-500/40 to-green-500/40", icon: "💰" }
+    { label: "Total Users", value: overview.total_users, accent: "from-blue-500/40 to-cyan-500/40", icon: "👥", link: "/admin/users" },
+    { label: "Total Restaurants", value: overview.total_restaurants, accent: "from-orange-500/40 to-amber-500/40", icon: "🍽️", link: "/admin/restaurants" },
+    { label: "Total Orders", value: overview.total_orders, accent: "from-purple-500/40 to-pink-500/40", icon: "📦", link: "/admin/orders" },
+    { label: "Total Revenue", value: formatCurrency(overview.total_revenue), accent: "from-emerald-500/40 to-green-500/40", icon: "💰", link: "/admin/revenue" }
   ];
+
+  const handleCardClick = (link) => {
+    if (link) {
+      window.location.href = link;
+    }
+  };
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {cards.map((card, idx) => (
         <div
           key={idx}
-          className={`rounded-2xl border border-white/10 bg-gradient-to-br ${card.accent} p-6 shadow-lg shadow-black/30`}
+          onClick={() => handleCardClick(card.link)}
+          className={`rounded-2xl border border-white/10 bg-gradient-to-br ${card.accent} p-6 shadow-lg shadow-black/30 ${card.link ? 'cursor-pointer hover:scale-[1.02] transition-transform' : ''}`}
         >
           <div className="flex items-center justify-between">
             <p className="text-sm uppercase tracking-wider text-gray-200/80">{card.label}</p>

@@ -1,36 +1,38 @@
-<div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center p-4">
-  <div class="bg-white/10 backdrop-blur-xl p-8 rounded-2xl shadow-2xl w-full max-w-md border border-white/20 animate-fadeIn">
-    <h2 class="text-3xl font-bold text-center mb-2 text-white">
-      Restaurant Partner Login
-    </h2>
-    <p class="text-center text-gray-300 mb-6 text-sm">
-      Access your restaurant dashboard
-    </p>
+<div class="min-h-screen bg-white flex items-center justify-center p-4">
+  <div class="bg-orange-50 border border-orange-200 p-8 rounded-2xl shadow-xl w-full max-w-md">
+    <div class="text-center mb-6">
+      <h2 class="text-3xl font-bold text-orange-500 mb-2">
+        Restaurant Partner Login
+      </h2>
+      <p class="text-gray-600 text-sm">
+        Access your restaurant dashboard
+      </p>
+    </div>
 
     <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "space-y-4" }) do |f| %>
       <div>
-        <%= f.label :email, "Email Address", class: "block text-sm font-medium text-gray-300 mb-2" %>
-        <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "restaurant@example.com", class: "w-full px-4 py-3 rounded-xl bg-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 transition" %>
+        <%= f.label :email, "Email Address", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "restaurant@example.com", class: "w-full px-4 py-3 rounded-xl border border-gray-300 bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition" %>
       </div>
 
       <div>
-        <%= f.label :password, class: "block text-sm font-medium text-gray-300 mb-2" %>
-        <%= f.password_field :password, autocomplete: "current-password", placeholder: "Enter your password", class: "w-full px-4 py-3 rounded-xl bg-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 transition" %>
+        <%= f.label :password, class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= f.password_field :password, autocomplete: "current-password", placeholder: "Enter your password", class: "w-full px-4 py-3 rounded-xl border border-gray-300 bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition" %>
       </div>
 
       <% if devise_mapping.rememberable? %>
         <div class="flex items-center">
-          <%= f.check_box :remember_me, class: "w-4 h-4 rounded bg-white/20 border-white/30 text-blue-500 focus:ring-2 focus:ring-blue-400" %>
-          <%= f.label :remember_me, "Remember me", class: "ml-2 text-sm text-gray-300" %>
+          <%= f.check_box :remember_me, class: "w-4 h-4 rounded border-gray-300 text-orange-500 focus:ring-2 focus:ring-orange-400" %>
+          <%= f.label :remember_me, "Remember me", class: "ml-2 text-sm text-gray-700" %>
         </div>
       <% end %>
 
       <div>
-        <%= f.submit "Log in", class: "w-full py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl mt-4 shadow-lg transform hover:scale-[1.02] transition-all cursor-pointer" %>
+        <%= f.submit "Log in", class: "w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl mt-4 shadow-lg shadow-orange-200 transform hover:scale-[1.02] transition-all cursor-pointer" %>
       </div>
     <% end %>
 
-    <div class="mt-6 text-center">
+    <div class="mt-6 text-center text-gray-600 text-sm">
       <%= render "restaurants/shared/links" %>
     </div>
   </div>

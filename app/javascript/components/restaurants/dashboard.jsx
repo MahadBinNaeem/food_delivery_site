@@ -81,18 +81,18 @@ function RestaurantDashboard({ initialData = {} }) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl space-y-8">
+    <div className="min-h-screen bg-white py-8 px-2 sm:px-4 lg:px-6">
+      <div className="mx-auto max-w-[1360px] space-y-8">
         <RestaurantHeader restaurant={restaurant} />
 
         {loading && (
-          <div className="rounded-2xl border border-white/5 bg-white/5 px-4 py-6 text-gray-300">
+          <div className="rounded-2xl border border-gray-200 bg-gray-50 px-4 py-6 text-gray-600">
             Loading your dashboard…
           </div>
         )}
 
         {error && (
-          <div className="rounded-2xl border border-red-500/40 bg-red-500/10 px-4 py-6 text-red-100">
+          <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-6 text-red-600">
             {error}
           </div>
         )}
@@ -129,16 +129,16 @@ function RestaurantDashboard({ initialData = {} }) {
 
 function RestaurantHeader({ restaurant }) {
   return (
-    <header className="rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl shadow-black/40 backdrop-blur">
-      <p className="text-sm uppercase tracking-[0.3em] text-blue-200/80">Restaurant Dashboard</p>
-      <h1 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
+    <header className="rounded-3xl border border-orange-200 bg-orange-50 p-8 shadow-xl shadow-orange-100">
+      <p className="text-sm uppercase tracking-[0.3em] text-orange-400">Restaurant Dashboard</p>
+      <h1 className="mt-3 text-3xl font-bold text-orange-600 sm:text-4xl">
         {restaurant.name || "Your Restaurant"}
       </h1>
-      <p className="mt-2 text-gray-300">
+      <p className="mt-2 text-gray-600">
         Manage orders, track sales, and monitor your restaurant performance.
       </p>
       {restaurant.joined_at && (
-        <p className="mt-4 text-xs uppercase tracking-wide text-gray-400">
+        <p className="mt-4 text-xs uppercase tracking-wide text-gray-500">
           Partner since {formatDate(restaurant.joined_at)}
         </p>
       )}
@@ -151,9 +151,9 @@ function RestaurantHeader({ restaurant }) {
 
 function SalesCards({ sales }) {
   const cards = [
-    { label: "Today's Sales", value: sales.today, accent: "from-emerald-500/40 to-green-500/40", icon: "📊" },
-    { label: "This Week", value: sales.this_week, accent: "from-blue-500/40 to-cyan-500/40", icon: "📈" },
-    { label: "This Month", value: sales.this_month, accent: "from-purple-500/40 to-pink-500/40", icon: "💰" }
+    { label: "Today's Sales", value: sales.today, accent: "from-emerald-400 to-green-400", icon: "📊" },
+    { label: "This Week", value: sales.this_week, accent: "from-blue-400 to-cyan-400", icon: "📈" },
+    { label: "This Month", value: sales.this_month, accent: "from-purple-400 to-pink-400", icon: "💰" }
   ];
 
   return (
@@ -161,10 +161,10 @@ function SalesCards({ sales }) {
       {cards.map((card, idx) => (
         <div
           key={idx}
-          className={`rounded-2xl border border-white/10 bg-gradient-to-br ${card.accent} p-6 shadow-lg shadow-black/30`}
+          className={`rounded-2xl border border-gray-200 bg-gradient-to-br ${card.accent} p-6 shadow-lg`}
         >
           <div className="flex items-center justify-between">
-            <p className="text-sm uppercase tracking-wider text-gray-200/80">{card.label}</p>
+            <p className="text-sm uppercase tracking-wider text-white/90">{card.label}</p>
             <span className="text-2xl">{card.icon}</span>
           </div>
           <p className="mt-3 text-3xl font-bold text-white">{formatCurrency(card.value)}</p>
@@ -177,8 +177,8 @@ function SalesCards({ sales }) {
 function SalesChart({ data, title }) {
   if (!data || data.length === 0) {
     return (
-      <section className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-black/30">
-        <h2 className="text-xl font-semibold text-white">{title}</h2>
+      <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-lg">
+        <h2 className="text-xl font-semibold text-gray-800">{title}</h2>
         <EmptyState message="No sales data available yet" />
       </section>
     );
@@ -187,20 +187,20 @@ function SalesChart({ data, title }) {
   const maxSales = Math.max(...data.map(d => d.sales || 0), 1);
 
   return (
-    <section className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-black/30">
-      <h2 className="text-xl font-semibold text-white mb-6">{title}</h2>
+    <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-lg">
+      <h2 className="text-xl font-semibold text-gray-800 mb-6">{title}</h2>
       <div className="space-y-3">
         {data.map((item, idx) => {
           const percentage = ((item.sales || 0) / maxSales) * 100;
           return (
             <div key={idx} className="space-y-1">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-300">{item.day || item.month}</span>
-                <span className="text-white font-semibold">{formatCurrency(item.sales || 0)}</span>
+                <span className="text-gray-600">{item.day || item.month}</span>
+                <span className="text-gray-900 font-semibold">{formatCurrency(item.sales || 0)}</span>
               </div>
-              <div className="h-3 bg-white/10 rounded-full overflow-hidden">
+              <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full transition-all duration-500"
+                  className="h-full bg-gradient-to-r from-orange-500 to-orange-400 rounded-full transition-all duration-500"
                   style={{ width: `${percentage}%` }}
                 />
               </div>
@@ -227,10 +227,10 @@ function MetricsGrid({ metrics }) {
       {metricCards.map((metric, idx) => (
         <div
           key={idx}
-          className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-lg shadow-black/30"
+          className="rounded-2xl border border-gray-200 bg-white p-4 shadow-md"
         >
-          <p className="text-xs uppercase tracking-wider text-gray-400">{metric.label}</p>
-          <p className="mt-2 text-2xl font-bold text-white">
+          <p className="text-xs uppercase tracking-wider text-gray-500">{metric.label}</p>
+          <p className="mt-2 text-2xl font-bold text-gray-900">
             {metric.value}{metric.suffix}
           </p>
         </div>
@@ -241,24 +241,24 @@ function MetricsGrid({ metrics }) {
 
 function OrdersStatusGrid({ orders }) {
   const statusCards = [
-    { label: "Pending", value: orders.pending, color: "from-yellow-500/40 to-amber-500/40" },
-    { label: "Preparing", value: orders.preparing, color: "from-orange-500/40 to-red-500/40" },
-    { label: "Ready", value: orders.ready, color: "from-green-500/40 to-emerald-500/40" },
-    { label: "Out for Delivery", value: orders.out_for_delivery, color: "from-blue-500/40 to-cyan-500/40" },
-    { label: "Completed Today", value: orders.completed_today, color: "from-emerald-500/40 to-teal-500/40" },
-    { label: "Cancelled Today", value: orders.cancelled_today, color: "from-red-500/40 to-rose-500/40" }
+    { label: "Pending", value: orders.pending, color: "from-yellow-400 to-amber-400" },
+    { label: "Preparing", value: orders.preparing, color: "from-orange-400 to-red-400" },
+    { label: "Ready", value: orders.ready, color: "from-green-400 to-emerald-400" },
+    { label: "Out for Delivery", value: orders.out_for_delivery, color: "from-blue-400 to-cyan-400" },
+    { label: "Completed Today", value: orders.completed_today, color: "from-emerald-400 to-teal-400" },
+    { label: "Cancelled Today", value: orders.cancelled_today, color: "from-red-400 to-rose-400" }
   ];
 
   return (
-    <section className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-black/30">
-      <h2 className="text-xl font-semibold text-white mb-4">Order Status</h2>
+    <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-lg">
+      <h2 className="text-xl font-semibold text-gray-800 mb-4">Order Status</h2>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
         {statusCards.map((card, idx) => (
           <div
             key={idx}
-            className={`rounded-xl border border-white/10 bg-gradient-to-br ${card.color} p-4`}
+            className={`rounded-xl border border-gray-200 bg-gradient-to-br ${card.color} p-4`}
           >
-            <p className="text-xs uppercase tracking-wider text-gray-200">{card.label}</p>
+            <p className="text-xs uppercase tracking-wider text-white/90">{card.label}</p>
             <p className="mt-2 text-3xl font-bold text-white">{card.value}</p>
           </div>
         ))}
@@ -269,25 +269,25 @@ function OrdersStatusGrid({ orders }) {
 
 function RecentOrders({ orders = [] }) {
   return (
-    <section className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-black/30">
-      <h2 className="text-xl font-semibold text-white">Recent Orders</h2>
-      <p className="text-sm text-gray-300 mb-4">Latest customer orders</p>
+    <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-lg">
+      <h2 className="text-xl font-semibold text-gray-800">Recent Orders</h2>
+      <p className="text-sm text-gray-600 mb-4">Latest customer orders</p>
 
       {orders.length === 0 ? (
         <EmptyState message="No orders yet" />
       ) : (
         <div className="space-y-3 max-h-96 overflow-y-auto">
           {orders.map(order => (
-            <div key={order.id} className="rounded-2xl border border-white/5 bg-white/5 p-4">
+            <div key={order.id} className="rounded-2xl border border-gray-200 bg-gray-50 p-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-mono text-gray-400">#{order.id}</span>
+                <span className="text-sm font-mono text-gray-500">#{order.id}</span>
                 <OrderStatusPill status={order.status} />
               </div>
-              <p className="text-white font-semibold">{order.customer_name}</p>
-              <p className="text-sm text-gray-300 mt-1">{order.items}</p>
+              <p className="text-gray-900 font-semibold">{order.customer_name}</p>
+              <p className="text-sm text-gray-600 mt-1">{order.items}</p>
               <div className="flex justify-between items-center mt-3">
-                <span className="text-lg font-bold text-white">{formatCurrency(order.total)}</span>
-                <span className="text-xs text-gray-400">{formatDateTime(order.placed_at)}</span>
+                <span className="text-lg font-bold text-gray-900">{formatCurrency(order.total)}</span>
+                <span className="text-xs text-gray-500">{formatDateTime(order.placed_at)}</span>
               </div>
             </div>
           ))}
@@ -299,22 +299,22 @@ function RecentOrders({ orders = [] }) {
 
 function TopItems({ items = [] }) {
   return (
-    <section className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-black/30">
-      <h2 className="text-xl font-semibold text-white">Top Selling Items</h2>
-      <p className="text-sm text-gray-300 mb-4">Best performing menu items</p>
+    <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-lg">
+      <h2 className="text-xl font-semibold text-gray-800">Top Selling Items</h2>
+      <p className="text-sm text-gray-600 mb-4">Best performing menu items</p>
 
       {items.length === 0 ? (
         <EmptyState message="No items data available" />
       ) : (
         <div className="space-y-3">
           {items.map((item, idx) => (
-            <div key={idx} className="rounded-2xl border border-white/5 bg-white/5 p-4">
+            <div key={idx} className="rounded-2xl border border-gray-200 bg-gray-50 p-4">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
-                  <p className="text-white font-semibold">{item.name}</p>
-                  <p className="text-sm text-gray-400">{item.orders} orders</p>
+                  <p className="text-gray-900 font-semibold">{item.name}</p>
+                  <p className="text-sm text-gray-500">{item.orders} orders</p>
                 </div>
-                <p className="text-lg font-bold text-white">{formatCurrency(item.revenue)}</p>
+                <p className="text-lg font-bold text-gray-900">{formatCurrency(item.revenue)}</p>
               </div>
             </div>
           ))}
@@ -326,9 +326,9 @@ function TopItems({ items = [] }) {
 
 function StatusBadge({ status }) {
   const statusConfig = {
-    pending: { label: "Pending Approval", color: "bg-yellow-500/20 text-yellow-200 border-yellow-500/40" },
-    approved: { label: "Active", color: "bg-green-500/20 text-green-200 border-green-500/40" },
-    suspended: { label: "Suspended", color: "bg-red-500/20 text-red-200 border-red-500/40" }
+    pending: { label: "Pending Approval", color: "bg-yellow-100 text-yellow-700 border-yellow-300" },
+    approved: { label: "Active", color: "bg-green-100 text-green-700 border-green-300" },
+    suspended: { label: "Suspended", color: "bg-red-100 text-red-700 border-red-300" }
   };
 
   const config = statusConfig[status] || statusConfig.pending;
@@ -342,12 +342,12 @@ function StatusBadge({ status }) {
 
 function OrderStatusPill({ status }) {
   const statusColors = {
-    pending: "bg-yellow-500/20 text-yellow-200",
-    preparing: "bg-orange-500/20 text-orange-200",
-    ready: "bg-green-500/20 text-green-200",
-    out_for_delivery: "bg-blue-500/20 text-blue-200",
-    completed: "bg-emerald-500/20 text-emerald-200",
-    cancelled: "bg-red-500/20 text-red-200"
+    pending: "bg-yellow-100 text-yellow-700",
+    preparing: "bg-orange-100 text-orange-700",
+    ready: "bg-green-100 text-green-700",
+    out_for_delivery: "bg-blue-100 text-blue-700",
+    completed: "bg-emerald-100 text-emerald-700",
+    cancelled: "bg-red-100 text-red-700"
   };
 
   const color = statusColors[status] || statusColors.pending;
@@ -361,7 +361,7 @@ function OrderStatusPill({ status }) {
 
 function EmptyState({ message }) {
   return (
-    <div className="mt-4 rounded-2xl border border-dashed border-white/10 bg-white/5 px-4 py-8 text-center text-sm text-gray-300">
+    <div className="mt-4 rounded-2xl border border-dashed border-gray-300 bg-gray-50 px-4 py-8 text-center text-sm text-gray-600">
       {message}
     </div>
   );
@@ -390,18 +390,18 @@ function formatDate(value) {
 
 function LogoutPanel({ onLogout, loggingOut, error }) {
   return (
-    <section className="rounded-3xl border border-white/10 bg-gradient-to-r from-white/10 via-white/5 to-white/0 p-6 text-center shadow-xl shadow-black/30">
-      <h2 className="text-xl font-semibold text-white">Need a break from managing orders?</h2>
-      <p className="mt-2 text-sm text-gray-300">You can sign back in anytime to continue serving your customers.</p>
+    <section className="rounded-3xl border border-gray-200 bg-gradient-to-r from-orange-50 to-white p-6 text-center shadow-lg">
+      <h2 className="text-xl font-semibold text-gray-800">Need a break from managing orders?</h2>
+      <p className="mt-2 text-sm text-gray-600">You can sign back in anytime to continue serving your customers.</p>
       <button
         type="button"
         onClick={onLogout}
         disabled={loggingOut}
-        className="mt-5 inline-flex items-center justify-center rounded-2xl bg-red-500 px-6 py-3 text-base font-semibold text-white shadow-lg shadow-red-900/40 transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70"
+        className="mt-5 inline-flex items-center justify-center rounded-2xl bg-red-500 px-6 py-3 text-base font-semibold text-white shadow-lg shadow-red-200 transition hover:-translate-y-0.5 hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-70"
       >
         {loggingOut ? "Signing out…" : "Log out"}
       </button>
-      {error && <p className="mt-3 text-sm text-red-300">{error}</p>}
+      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
     </section>
   );
 }

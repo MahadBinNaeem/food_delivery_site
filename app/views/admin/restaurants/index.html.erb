@@ -1,0 +1,135 @@
+<div class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="mx-auto max-w-7xl">
+    <div class="mb-8">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-white">All Restaurants</h1>
+          <p class="mt-2 text-gray-300">Manage and monitor all restaurant partners</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <%= link_to admin_dashboard_path, class: "inline-flex items-center justify-center rounded-xl bg-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/20 transition" do %>
+            ← Back to Dashboard
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-4 mb-8">
+      <div class="rounded-2xl border border-white/10 bg-gradient-to-br from-green-500/40 to-emerald-500/40 p-6 shadow-lg">
+        <p class="text-sm uppercase tracking-wider text-gray-200/80">Total</p>
+        <p class="mt-2 text-3xl font-bold text-white"><%= @restaurants.count %></p>
+      </div>
+      <div class="rounded-2xl border border-white/10 bg-gradient-to-br from-yellow-500/40 to-amber-500/40 p-6 shadow-lg">
+        <p class="text-sm uppercase tracking-wider text-gray-200/80">Pending</p>
+        <p class="mt-2 text-3xl font-bold text-white"><%= @restaurants.pending.count %></p>
+      </div>
+      <div class="rounded-2xl border border-white/10 bg-gradient-to-br from-green-500/40 to-teal-500/40 p-6 shadow-lg">
+        <p class="text-sm uppercase tracking-wider text-gray-200/80">Approved</p>
+        <p class="mt-2 text-3xl font-bold text-white"><%= @restaurants.approved.count %></p>
+      </div>
+      <div class="rounded-2xl border border-white/10 bg-gradient-to-br from-red-500/40 to-rose-500/40 p-6 shadow-lg">
+        <p class="text-sm uppercase tracking-wider text-gray-200/80">Suspended</p>
+        <p class="mt-2 text-3xl font-bold text-white"><%= @restaurants.suspended.count %></p>
+      </div>
+    </div>
+
+    <!-- Restaurants Table -->
+    <div class="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-black/30">
+      <% if @restaurants.any? %>
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b border-white/10">
+                <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-300">ID</th>
+                <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-300">Name</th>
+                <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-300">Email</th>
+                <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-300">Contact</th>
+                <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-300">Cuisine</th>
+                <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-300">Status</th>
+                <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-300">Rating</th>
+                <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-300">Joined</th>
+                <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-300">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5">
+              <% @restaurants.each do |restaurant| %>
+                <tr class="hover:bg-white/5 transition">
+                  <td class="px-4 py-4 text-sm text-gray-300">#<%= restaurant.id %></td>
+                  <td class="px-4 py-4">
+                    <div class="flex items-center gap-3">
+                      <% if restaurant.logo_url.present? %>
+                        <%= image_tag restaurant.logo_url, class: "h-10 w-10 rounded-full object-cover", alt: restaurant.name %>
+                      <% else %>
+                        <div class="h-10 w-10 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white font-bold">
+                          <%= restaurant.name&.first&.upcase || 'R' %>
+                        </div>
+                      <% end %>
+                      <div>
+                        <p class="font-semibold text-white"><%= restaurant.name || 'Unnamed Restaurant' %></p>
+                        <% if restaurant.owner_name.present? %>
+                          <p class="text-xs text-gray-400">Owner: <%= restaurant.owner_name %></p>
+                        <% end %>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-4 py-4 text-sm text-gray-300"><%= restaurant.email %></td>
+                  <td class="px-4 py-4 text-sm text-gray-300"><%= restaurant.contact_number || 'N/A' %></td>
+                  <td class="px-4 py-4 text-sm text-gray-300"><%= restaurant.cuisine_type || 'N/A' %></td>
+                  <td class="px-4 py-4">
+                    <% case restaurant.status %>
+                    <% when 'pending' %>
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-yellow-500/20 text-yellow-200 border border-yellow-500/40">
+                        Pending
+                      </span>
+                    <% when 'approved' %>
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-500/20 text-green-200 border border-green-500/40">
+                        Approved
+                      </span>
+                    <% when 'suspended' %>
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-500/20 text-red-200 border border-red-500/40">
+                        Suspended
+                      </span>
+                    <% end %>
+                  </td>
+                  <td class="px-4 py-4 text-sm">
+                    <div class="flex items-center gap-1">
+                      <span class="text-yellow-400">⭐</span>
+                      <span class="text-white font-semibold"><%= restaurant.rating || '0.0' %></span>
+                      <span class="text-gray-400">(<%= restaurant.reviews_count || 0 %>)</span>
+                    </div>
+                  </td>
+                  <td class="px-4 py-4 text-sm text-gray-300">
+                    <%= restaurant.created_at.strftime('%b %d, %Y') %>
+                  </td>
+                  <td class="px-4 py-4">
+                    <div class="flex items-center gap-2">
+                      <%= link_to admin_restaurant_path(restaurant), class: "inline-flex items-center justify-center rounded-lg bg-blue-500/20 px-3 py-1.5 text-xs font-semibold text-blue-200 hover:bg-blue-500/30 transition" do %>
+                        View
+                      <% end %>
+
+                      <% if restaurant.pending? %>
+                        <%= button_to "Approve", approve_admin_restaurant_path(restaurant, status: :approve), method: :patch, class: "inline-flex items-center justify-center rounded-lg bg-green-500/20 px-3 py-1.5 text-xs font-semibold text-green-200 hover:bg-green-500/30 transition", form: { data: { turbo_confirm: "Are you sure you want to approve this restaurant?" } } %>
+                        <%= button_to "Suspend", approve_admin_restaurant_path(restaurant, status: :suspended), method: :patch, class: "inline-flex items-center justify-center rounded-lg bg-red-500/20 px-3 py-1.5 text-xs font-semibold text-green-200 hover:bg-green-500/30 transition", form: { data: { turbo_confirm: "Are you sure you want to suspend this restaurant?" } } %>
+                      <% end %>
+
+                      <%= button_to "Edit", edit_admin_restaurant_path(restaurant), method: :get, class: "inline-flex items-center justify-center rounded-lg bg-orange-500/20 px-3 py-1.5 text-xs font-semibold text-orange-200 hover:bg-orange-500/30 transition" %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <div class="py-12 text-center">
+          <div class="mx-auto h-24 w-24 rounded-full bg-white/5 flex items-center justify-center mb-4">
+            <span class="text-4xl">🍽️</span>
+          </div>
+          <h3 class="text-xl font-semibold text-white mb-2">No Restaurants Yet</h3>
+          <p class="text-gray-300">No restaurant partners have registered yet.</p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
