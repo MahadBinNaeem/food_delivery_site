@@ -24,6 +24,7 @@ function CustomerDashboard({ initialData = {} }) {
   const [error, setError] = useState(null);
   const [loggingOut, setLoggingOut] = useState(false);
   const [logoutError, setLogoutError] = useState(null);
+  const [activeTab, setActiveTab] = useState('delivery');
 
   useEffect(() => {
     const controller = new AbortController();
@@ -84,65 +85,98 @@ function CustomerDashboard({ initialData = {} }) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-6xl space-y-8">
-        <TopBar signupPath={authPaths.restaurant_signup || "/restaurants/sign_up"} />
+    <div className="min-h-screen bg-white py-8 px-2 sm:px-4 lg:px-6">
+      <div className="mx-auto max-w-[1360px] space-y-8">
+        <header className="flex items-center justify-between rounded-full border border-orange-200 bg-orange-50 px-6 py-4 shadow-xl shadow-orange-100">
+          <div className="flex items-center gap-3">
+            <img
+              src="/assets/logo.png"
+              alt="MealMate Logo"
+              className="h-12 w-auto"
+            />
+            <h1 className="text-2xl font-bold text-orange-500">MealMate</h1>
+          </div>
 
-        <header className="rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl shadow-black/40 backdrop-blur">
-          <p className="text-sm uppercase tracking-[0.3em] text-blue-200/80">Welcome back</p>
-          <h1 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
-            {user.name || "Your dashboard"}
-          </h1>
-          <p className="mt-2 text-gray-300">
-            Track deliveries, explore new restaurants, and keep your favourites close.
-          </p>
-          {user.joined_at && (
-            <p className="mt-4 text-xs uppercase tracking-wide text-gray-400">
-              Member since {formatDate(user.joined_at)}
-            </p>
-          )}
+          {/* Action Buttons */}
           {!isLoggedIn && (
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+            <div className="flex items-center gap-3">
               <a
                 href={authPaths.login || "/users/sign_in"}
-                className="inline-flex items-center justify-center rounded-2xl bg-white px-5 py-3 text-base font-semibold text-gray-900 shadow-lg shadow-black/30 transition hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center rounded-full border-2 border-orange-500 bg-white px-5 py-2.5 text-sm font-semibold text-orange-600 shadow-md transition hover:-translate-y-0.5 hover:bg-orange-50"
               >
                 Log in
               </a>
               <a
-                href={authPaths.signup || "/users/sign_up"}
-                className="inline-flex items-center justify-center rounded-2xl border border-white/40 bg-transparent px-5 py-3 text-base font-semibold text-white transition hover:bg-white/10"
+                href={authPaths.restaurant_signup || "/restaurants/sign_up"}
+                className="inline-flex items-center justify-center rounded-full bg-orange-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-orange-300 transition hover:-translate-y-0.5 hover:bg-orange-600"
               >
-                Sign up
+                Sign up to be a restaurant partner
               </a>
             </div>
           )}
         </header>
 
         {loading && (
-          <div className="rounded-2xl border border-white/5 bg-white/5 px-4 py-6 text-gray-300">
+          <div className="rounded-2xl border border-gray-200 bg-gray-50 px-4 py-6 text-gray-600">
             Loading your dashboard…
           </div>
         )}
 
         {error && (
-          <div className="rounded-2xl border border-red-500/40 bg-red-500/10 px-4 py-6 text-red-100">
+          <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-6 text-red-600">
             {error}
           </div>
         )}
 
         {!loading && !error && (
           <>
-            <RecommendedRestaurants restaurants={dashboard.recommended_restaurants} className="w-full" />
-
             <StatsGrid stats={dashboard.stats} />
 
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-              <RecentOrders orders={dashboard.recent_orders} className="lg:col-span-2" />
-              <SavedAddresses addresses={dashboard.saved_addresses} />
+            <div className="flex gap-2 border-b border-gray-200">
+              <button
+                onClick={() => setActiveTab('delivery')}
+                className={`px-6 py-3 text-sm font-semibold transition ${
+                  activeTab === 'delivery'
+                    ? 'border-b-2 border-orange-500 text-orange-600'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                Delivery
+              </button>
+              <button
+                onClick={() => setActiveTab('pickup')}
+                className={`px-6 py-3 text-sm font-semibold transition ${
+                  activeTab === 'pickup'
+                    ? 'border-b-2 border-orange-500 text-orange-600'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                Pickup
+              </button>
             </div>
 
-            <QuickActions actions={dashboard.quick_actions} className="w-full" />
+            {/* Tab Content */}
+            {activeTab === 'delivery' && (
+              <>
+                <RecommendedRestaurants restaurants={dashboard.recommended_restaurants} className="w-full" />
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+                  <RecentOrders orders={dashboard.recent_orders} className="lg:col-span-2" />
+                  <SavedAddresses addresses={dashboard.saved_addresses} />
+                </div>
+                <QuickActions actions={dashboard.quick_actions} className="w-full" />
+              </>
+            )}
+
+            {activeTab === 'pickup' && (
+              <>
+                <RecommendedRestaurants restaurants={dashboard.recommended_restaurants} className="w-full" />
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+                  <RecentOrders orders={dashboard.recent_orders} className="lg:col-span-2" />
+                  <SavedAddresses addresses={dashboard.saved_addresses} />
+                </div>
+                <QuickActions actions={dashboard.quick_actions} className="w-full" />
+              </>
+            )}
 
             {isLoggedIn && (
               <LogoutPanel
@@ -164,9 +198,9 @@ function StatsGrid({ stats = {} }) {
       {STAT_CONFIG.map(stat => (
         <div
           key={stat.key}
-          className={`rounded-2xl border border-white/10 bg-gradient-to-br ${stat.accent} p-5 shadow-lg shadow-black/30`}
+          className={`rounded-2xl border border-gray-200 bg-gradient-to-br ${stat.accent} p-5 shadow-lg`}
         >
-          <p className="text-sm uppercase tracking-wider text-gray-200/80">{stat.label}</p>
+          <p className="text-sm uppercase tracking-wider text-white/90">{stat.label}</p>
           <p className="mt-2 text-3xl font-bold text-white">{stats[stat.key] ?? 0}</p>
         </div>
       ))}
@@ -176,28 +210,28 @@ function StatsGrid({ stats = {} }) {
 
 function RecentOrders({ orders = [], className = "" }) {
   return (
-    <section className={`rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-black/30 ${className}`}>
+    <section className={`rounded-3xl border border-gray-200 bg-white p-6 shadow-lg ${className}`}>
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-semibold text-white">Recent orders</h2>
-          <p className="text-sm text-gray-300">Your latest activity</p>
+          <h2 className="text-xl font-semibold text-gray-900">Recent orders</h2>
+          <p className="text-sm text-gray-500">Your latest activity</p>
         </div>
       </div>
 
       {orders.length === 0 ? (
-        <EmptyState message="No orders just yet. Let’s change that!" />
+        <EmptyState message="No orders just yet. Let's change that!" />
       ) : (
         <ul className="mt-4 space-y-4">
           {orders.map(order => (
-            <li key={order.id} className="rounded-2xl border border-white/5 bg-white/5 p-4 backdrop-blur-md">
+            <li key={order.id} className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm uppercase tracking-wide text-gray-400">Order #{order.id}</p>
-                  <p className="text-lg font-semibold text-white">{order.restaurant || "Restaurant"}</p>
+                  <p className="text-sm uppercase tracking-wide text-gray-500">Order #{order.id}</p>
+                  <p className="text-lg font-semibold text-gray-900">{order.restaurant || "Restaurant"}</p>
                 </div>
-                <span className="text-lg font-bold text-white">{formatCurrency(order.total)}</span>
+                <span className="text-lg font-bold text-gray-900">{formatCurrency(order.total)}</span>
               </div>
-              <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-gray-300">
+              <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-gray-600">
                 <StatusPill status={order.status} />
                 <p>Placed {formatDateTime(order.placed_at)}</p>
                 {order.eta && <p>ETA {order.eta}</p>}
@@ -212,20 +246,20 @@ function RecentOrders({ orders = [], className = "" }) {
 
 function SavedAddresses({ addresses = [] }) {
   return (
-    <section className="rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-6 shadow-xl shadow-black/30">
-      <h2 className="text-xl font-semibold text-white">Saved addresses</h2>
-      <p className="text-sm text-gray-300">Switch delivery locations quickly</p>
+    <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-lg">
+      <h2 className="text-xl font-semibold text-gray-900">Saved addresses</h2>
+      <p className="text-sm text-gray-500">Switch delivery locations quickly</p>
 
       {addresses.length === 0 ? (
         <EmptyState message="Add an address to speed up your next checkout." />
       ) : (
         <ul className="mt-4 space-y-4">
           {addresses.map(address => (
-            <li key={address.id || address.label} className="rounded-2xl border border-white/5 bg-white/5 p-4">
-              <p className="text-sm uppercase tracking-[0.3em] text-gray-400">{address.label}</p>
-              <p className="text-lg font-semibold text-white">{address.street}</p>
-              <p className="text-sm text-gray-300">{address.city}</p>
-              {address.instructions && <p className="mt-1 text-xs text-gray-400">{address.instructions}</p>}
+            <li key={address.id || address.label} className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+              <p className="text-sm uppercase tracking-[0.3em] text-gray-500">{address.label}</p>
+              <p className="text-lg font-semibold text-gray-900">{address.street}</p>
+              <p className="text-sm text-gray-600">{address.city}</p>
+              {address.instructions && <p className="mt-1 text-xs text-gray-500">{address.instructions}</p>}
             </li>
           ))}
         </ul>
@@ -236,9 +270,9 @@ function SavedAddresses({ addresses = [] }) {
 
 function QuickActions({ actions = [], className = "" }) {
   return (
-    <section className={`rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-black/30 ${className}`}>
-      <h2 className="text-xl font-semibold text-white">Quick actions</h2>
-      <p className="text-sm text-gray-300">Jump back into the flow</p>
+    <section className={`rounded-3xl border border-gray-200 bg-white p-6 shadow-lg ${className}`}>
+      <h2 className="text-xl font-semibold text-gray-900">Quick actions</h2>
+      <p className="text-sm text-gray-500">Jump back into the flow</p>
 
       {actions.length === 0 ? (
         <EmptyState message="Shortcuts will appear here once available." />
@@ -248,10 +282,10 @@ function QuickActions({ actions = [], className = "" }) {
             <a
               key={action.id}
               href={action.href || "#"}
-              className="block rounded-2xl border border-white/5 bg-gradient-to-r from-white/5 via-white/10 to-white/5 p-4 transition hover:border-blue-400/40"
+              className="block rounded-2xl border border-gray-100 bg-gray-50 p-4 transition hover:border-orange-300 hover:bg-orange-50"
             >
-              <p className="text-sm uppercase tracking-[0.3em] text-gray-400">{action.label}</p>
-              <p className="text-lg font-semibold text-white">{action.description}</p>
+              <p className="text-sm uppercase tracking-[0.3em] text-gray-500">{action.label}</p>
+              <p className="text-lg font-semibold text-gray-900">{action.description}</p>
             </a>
           ))}
         </div>
@@ -264,7 +298,7 @@ function TopBar({ signupPath }) {
   if (!signupPath) return null;
 
   return (
-    <div className="flex flex-col gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-4 text-white shadow-lg shadow-black/25 backdrop-blur sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-3 border border-white/10 bg-white/5 px-5 py-4 text-white shadow-lg shadow-black/25 backdrop-blur-md sm:flex-row sm:items-center sm:justify-between">
       <div>
         <p className="text-xs uppercase tracking-[0.4em] text-gray-300">Partner with us</p>
         <p className="text-sm text-gray-100">List your restaurant and reach new customers today.</p>
@@ -281,44 +315,44 @@ function TopBar({ signupPath }) {
 
 function LogoutPanel({ onLogout, loggingOut, error }) {
   return (
-    <section className="rounded-3xl border border-white/10 bg-gradient-to-r from-white/10 via-white/5 to-white/0 p-6 text-center shadow-xl shadow-black/30">
-      <h2 className="text-xl font-semibold text-white">Ready to take a break?</h2>
-      <p className="mt-2 text-sm text-gray-300">You can always hop back in when hunger strikes.</p>
+    <section className="rounded-3xl border border-gray-200 bg-white p-6 text-center shadow-lg">
+      <h2 className="text-xl font-semibold text-gray-900">Ready to take a break?</h2>
+      <p className="mt-2 text-sm text-gray-600">You can always hop back in when hunger strikes.</p>
       <button
         type="button"
         onClick={onLogout}
         disabled={loggingOut}
-        className="mt-5 inline-flex items-center justify-center rounded-2xl bg-red-500 px-6 py-3 text-base font-semibold text-white shadow-lg shadow-red-900/40 transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70"
+        className="mt-5 inline-flex items-center justify-center rounded-2xl bg-red-500 px-6 py-3 text-base font-semibold text-white shadow-lg shadow-red-200 transition hover:-translate-y-0.5 hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-70"
       >
         {loggingOut ? "Signing out…" : "Log out"}
       </button>
-      {error && <p className="mt-3 text-sm text-red-300">{error}</p>}
+      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
     </section>
   );
 }
 
 function RecommendedRestaurants({ restaurants = [], className = "" }) {
   return (
-    <section className={`rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-black/30 ${className}`}>
-      <h2 className="text-xl font-semibold text-white">Recommended for you</h2>
-      <p className="text-sm text-gray-300">Curated picks based on your taste</p>
+    <section className={`rounded-3xl border border-gray-200 bg-white p-6 shadow-lg ${className}`}>
+      <h2 className="text-xl font-semibold text-gray-900">Restaurants</h2>
+      <p className="text-sm text-gray-500">Curated picks based on your taste</p>
 
       {restaurants.length === 0 ? (
         <EmptyState message="Start ordering to get personalised recommendations." />
       ) : (
         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
           {restaurants.map(restaurant => (
-            <article key={restaurant.id || restaurant.name} className="rounded-2xl border border-white/5 bg-white/5 p-4">
+            <article key={restaurant.id || restaurant.name} className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-lg font-semibold text-white">{restaurant.name}</p>
-                  <p className="text-sm uppercase tracking-[0.3em] text-gray-400">{restaurant.cuisine}</p>
+                  <p className="text-lg font-semibold text-gray-900">{restaurant.name}</p>
+                  <p className="text-sm uppercase tracking-[0.3em] text-gray-500">{restaurant.cuisine}</p>
                 </div>
-                <span className="rounded-full bg-white/10 px-3 py-1 text-sm font-semibold text-amber-300">
+                <span className="rounded-full bg-yellow-100 px-3 py-1 text-sm font-semibold text-yellow-700">
                   {restaurant.rating ? `${restaurant.rating}★` : "New"}
                 </span>
               </div>
-              <p className="mt-3 text-sm text-gray-300">ETA {restaurant.eta || "20-30 min"}</p>
+              <p className="mt-3 text-sm text-gray-600">ETA {restaurant.eta || "20-30 min"}</p>
             </article>
           ))}
         </div>
@@ -331,7 +365,7 @@ function StatusPill({ status }) {
   if (!status) return null;
 
   return (
-    <span className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
+    <span className="rounded-full border border-gray-200 bg-gray-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-gray-700">
       {status}
     </span>
   );
@@ -339,7 +373,7 @@ function StatusPill({ status }) {
 
 function EmptyState({ message }) {
   return (
-    <div className="mt-4 rounded-2xl border border-dashed border-white/10 bg-white/5 px-4 py-8 text-center text-sm text-gray-300">
+    <div className="mt-4 rounded-2xl border border-dashed border-gray-300 bg-gray-50 px-4 py-8 text-center text-sm text-gray-500">
       {message}
     </div>
   );
