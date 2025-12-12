@@ -1,0 +1,49 @@
+<%= form_with(model: [ :restaurants, @menu ], class: "space-y-6") do |form| %>
+  <% if @menu.errors.any? %>
+    <div class="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+      <p class="font-semibold"><%= pluralize(@menu.errors.count, "error") %> prevented this menu from being saved:</p>
+      <ul class="mt-2 list-disc pl-5">
+        <% @menu.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+    <div class="col-span-1 sm:col-span-2">
+      <%= form.label :name, class: "block text-sm font-semibold text-gray-700" %>
+      <%= form.text_field :name, class: "mt-1 w-full rounded-2xl border border-gray-300 px-4 py-2 focus:border-orange-500 focus:ring-orange-500", placeholder: "e.g. Lunch Specials" %>
+    </div>
+
+    <div>
+      <%= form.label :menu_type, "Menu type", class: "block text-sm font-semibold text-gray-700" %>
+      <%= form.text_field :menu_type, class: "mt-1 w-full rounded-2xl border border-gray-300 px-4 py-2 focus:border-orange-500 focus:ring-orange-500", placeholder: "Breakfast, lunch, dinner…" %>
+    </div>
+
+    <div>
+      <%= form.label :is_active, class: "block text-sm font-semibold text-gray-700" %>
+      <%= form.select :is_active, [[ "Active", true ], [ "Inactive", false ]], {}, class: "mt-1 w-full rounded-2xl border border-gray-300 px-4 py-2 focus:border-orange-500 focus:ring-orange-500" %>
+    </div>
+
+    <div>
+      <%= form.label :available_from, class: "block text-sm font-semibold text-gray-700" %>
+      <%= form.time_field :available_from, class: "mt-1 w-full rounded-2xl border border-gray-300 px-4 py-2 focus:border-orange-500 focus:ring-orange-500" %>
+    </div>
+
+    <div>
+      <%= form.label :available_until, class: "block text-sm font-semibold text-gray-700" %>
+      <%= form.time_field :available_until, class: "mt-1 w-full rounded-2xl border border-gray-300 px-4 py-2 focus:border-orange-500 focus:ring-orange-500" %>
+    </div>
+  </div>
+
+  <div>
+    <%= form.label :description, class: "block text-sm font-semibold text-gray-700" %>
+    <%= form.text_area :description, rows: 4, class: "mt-1 w-full rounded-2xl border border-gray-300 px-4 py-2 focus:border-orange-500 focus:ring-orange-500", placeholder: "Let customers know what to expect from this menu." %>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <%= form.submit class: "inline-flex items-center justify-center rounded-full bg-orange-500 px-5 py-2 text-white font-semibold shadow hover:bg-orange-600" %>
+    <%= link_to "Cancel", restaurants_menus_path, class: "text-sm font-medium text-gray-600 hover:text-gray-900" %>
+  </div>
+<% end %>
