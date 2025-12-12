@@ -1,0 +1,69 @@
+<div class="mx-auto max-w-5xl space-y-8 py-8">
+  <div class="rounded-3xl border border-orange-200 bg-orange-50 p-6 shadow flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <p class="text-sm uppercase tracking-[0.3em] text-orange-400"><%= @menu.menu_type.presence || "Menu" %></p>
+      <h1 class="text-3xl font-bold text-orange-600"><%= @menu.name %></h1>
+      <p class="mt-2 text-gray-700"><%= @menu.description.presence || "Add a description so diners know what is included." %></p>
+      <div class="mt-3 flex flex-wrap gap-2 text-sm text-gray-600">
+        <span class="rounded-full bg-white/70 px-3 py-1 font-medium text-gray-700">
+          <%= @menu.is_active? ? "Active" : "Inactive" %>
+        </span>
+        <% if @menu.available_from.present? && @menu.available_until.present? %>
+          <span class="rounded-full bg-white/70 px-3 py-1 font-medium text-gray-700">
+            Available <%= @menu.available_from.strftime("%l:%M %p") %> - <%= @menu.available_until.strftime("%l:%M %p") %>
+          </span>
+        <% end %>
+      </div>
+    </div>
+    <div class="flex flex-wrap gap-3">
+      <%= link_to "All menus", restaurants_menus_path, class: "inline-flex items-center justify-center rounded-full border border-white/60 px-4 py-2 text-sm font-medium text-orange-600 hover:bg-white/40" %>
+      <%= link_to "Edit menu", edit_restaurants_menu_path(@menu), class: "inline-flex items-center justify-center rounded-full bg-white px-4 py-2 text-sm font-medium text-orange-600 shadow hover:bg-orange-100" %>
+      <%= link_to "Add dish", new_restaurants_menu_menu_item_path(@menu), class: "inline-flex items-center justify-center rounded-full bg-orange-500 px-5 py-2 text-sm font-semibold text-white shadow hover:bg-orange-600" %>
+    </div>
+  </div>
+
+  <div class="rounded-3xl border border-gray-200 bg-white p-6 shadow">
+    <div class="flex items-center justify-between">
+      <h2 class="text-2xl font-semibold text-gray-900">Dishes</h2>
+      <p class="text-sm text-gray-500"><%= pluralize(@menu.menu_items.count, "dish") %> total</p>
+    </div>
+
+    <% if @menu.menu_items.any? %>
+      <div class="mt-6 divide-y divide-gray-200">
+        <% @menu.menu_items.order(position: :asc).each do |item| %>
+          <div class="flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p class="text-lg font-semibold text-gray-900"><%= item.name %></p>
+              <p class="text-sm text-gray-600"><%= item.description %></p>
+              <div class="mt-2 flex flex-wrap gap-2 text-xs text-gray-500">
+                <span class="rounded-full bg-gray-100 px-3 py-1 font-medium text-gray-600"><%= item.category.presence || "Uncategorized" %></span>
+                <% item.dietary_tags_list.each do |tag| %>
+                  <span class="rounded-full bg-emerald-50 px-3 py-1 font-medium text-emerald-600"><%= tag %></span>
+                <% end %>
+                <span class="rounded-full <%= item.is_available? ? "bg-emerald-50 text-emerald-700" : "bg-gray-100 text-gray-600" %> px-3 py-1 font-medium">
+                  <%= item.is_available? ? "Available" : "Unavailable" %>
+                </span>
+              </div>
+            </div>
+            <div class="flex flex-col items-end gap-2">
+              <p class="text-xl font-semibold text-gray-900">
+                <%= number_to_currency(item.price) %>
+                <span class="ml-1 text-sm font-medium text-gray-500"><%= (item.currency || "PKR").upcase %></span>
+              </p>
+              <div class="flex gap-2">
+                <%= link_to "Edit", edit_restaurants_menu_menu_item_path(@menu, item), class: "inline-flex items-center justify-center rounded-full border border-gray-300 px-4 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50" %>
+                <%= button_to "Remove", restaurants_menu_menu_item_path(@menu, item), method: :delete, data: { turbo_confirm: "Remove #{item.name}?" }, class: "inline-flex items-center justify-center rounded-full border border-red-300 px-4 py-1 text-sm font-medium text-red-600 hover:bg-red-50" %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="mt-6 rounded-2xl border border-dashed border-gray-300 p-8 text-center">
+        <p class="text-lg font-semibold text-gray-900">No dishes yet</p>
+        <p class="mt-1 text-gray-600">Add your first dish to this menu to make it available to customers.</p>
+        <%= link_to "Add dish", new_restaurants_menu_menu_item_path(@menu), class: "mt-4 inline-flex items-center justify-center rounded-full bg-orange-500 px-5 py-2 text-white font-semibold shadow hover:bg-orange-600" %>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,46 @@
+<div class="mx-auto max-w-5xl space-y-8 py-8">
+  <div class="flex flex-col gap-3 rounded-3xl border border-orange-200 bg-orange-50 p-6 shadow-lg shadow-orange-100 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <p class="text-sm uppercase tracking-[0.3em] text-orange-400">Menus &amp; Dishes</p>
+      <h1 class="text-3xl font-bold text-orange-600">Manage your restaurant menus</h1>
+      <p class="text-gray-700 mt-2">Create menus for different day parts and keep dishes up to date.</p>
+    </div>
+    <%= link_to "Create menu", new_restaurants_menu_path, class: "inline-flex items-center justify-center rounded-full bg-orange-500 px-5 py-2 text-white font-semibold shadow hover:bg-orange-600" %>
+  </div>
+
+  <% if @menus.any? %>
+    <div class="grid grid-cols-1 gap-5">
+      <% @menus.each do |menu| %>
+        <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow">
+          <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p class="text-xs uppercase tracking-wider text-gray-500"><%= menu.menu_type.presence || "General" %> menu</p>
+              <h2 class="text-2xl font-semibold text-gray-900"><%= menu.name %></h2>
+              <p class="mt-2 text-gray-600"><%= menu.description.presence || "Add a short description so customers understand what is in this menu." %></p>
+            </div>
+            <div class="flex gap-2">
+              <span class="rounded-full px-3 py-1 text-xs font-semibold <%= menu.is_active? ? "bg-emerald-100 text-emerald-700" : "bg-gray-200 text-gray-600" %>">
+                <%= menu.is_active? ? "Active" : "Inactive" %>
+              </span>
+              <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">
+                <%= pluralize(menu.menu_items.count, "dish") %>
+              </span>
+            </div>
+          </div>
+
+          <div class="mt-4 flex flex-wrap gap-3">
+            <%= link_to "View dishes", restaurants_menu_path(menu), class: "inline-flex items-center justify-center rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50" %>
+            <%= link_to "Edit menu", edit_restaurants_menu_path(menu), class: "inline-flex items-center justify-center rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50" %>
+            <%= button_to "Delete menu", restaurants_menu_path(menu), method: :delete, data: { turbo_confirm: "Delete #{menu.name}? This will remove all dishes." }, class: "inline-flex items-center justify-center rounded-full border border-red-300 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="rounded-3xl border border-dashed border-gray-300 bg-white p-10 text-center">
+      <p class="text-lg font-semibold text-gray-800">No menus yet</p>
+      <p class="mt-2 text-gray-600">Start by creating your first menu so customers can see what you serve.</p>
+      <%= link_to "Create menu", new_restaurants_menu_path, class: "mt-4 inline-flex items-center justify-center rounded-full bg-orange-500 px-5 py-2 text-white font-semibold shadow hover:bg-orange-600" %>
+    </div>
+  <% end %>
+</div>
