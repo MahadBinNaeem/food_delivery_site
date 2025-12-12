@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import AdminDashboard from "./components/admin/dashboard";
 import CustomerDashboard from "./components/customer/dashboard";
 import RestaurantDashboard from "./components/restaurants/dashboard";
+import "./startup/restaurant_registration";
 
 const mount = () => {
   const adminEl = document.getElementById("admin-dashboard");

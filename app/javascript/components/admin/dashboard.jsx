@@ -85,18 +85,18 @@ function AdminDashboard({ initialData = {} }) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white py-8 px-2 sm:px-4 lg:px-6">
       <div className="mx-auto max-w-7xl space-y-8">
         <AdminHeader />
 
         {loading && (
-          <div className="rounded-2xl border border-white/5 bg-white/5 px-4 py-6 text-gray-300">
+          <div className="rounded-2xl border border-gray-200 bg-gray-50 px-4 py-6 text-gray-600">
             Loading dashboard data…
           </div>
         )}
 
         {error && (
-          <div className="rounded-2xl border border-red-500/40 bg-red-500/10 px-4 py-6 text-red-100">
+          <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-6 text-red-600">
             {error}
           </div>
         )}
@@ -136,12 +136,12 @@ function AdminDashboard({ initialData = {} }) {
 
 function AdminHeader() {
   return (
-    <header className="rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl shadow-black/40 backdrop-blur">
-      <p className="text-sm uppercase tracking-[0.3em] text-purple-200/80">Admin Panel</p>
-      <h1 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
+    <header className="rounded-4xl border border-orange-200 bg-orange-50 px-6 py-4 shadow-xl shadow-orange-100">
+      <p className="text-sm uppercase tracking-[0.3em] text-orange-600/80">Admin Panel</p>
+      <h1 className="mt-1 text-3xl font-bold text-orange-500 sm:text-4xl">
         Platform Dashboard
       </h1>
-      <p className="mt-2 text-gray-300">
+      <p className="mt-1 text-gray-600">
         Monitor and manage the entire platform from one central location.
       </p>
     </header>
@@ -150,21 +150,28 @@ function AdminHeader() {
 
 function OverviewCards({ overview }) {
   const cards = [
-    { label: "Total Users", value: overview.total_users, accent: "from-blue-500/40 to-cyan-500/40", icon: "👥" },
-    { label: "Total Restaurants", value: overview.total_restaurants, accent: "from-orange-500/40 to-amber-500/40", icon: "🍽️" },
-    { label: "Total Orders", value: overview.total_orders, accent: "from-purple-500/40 to-pink-500/40", icon: "📦" },
-    { label: "Total Revenue", value: formatCurrency(overview.total_revenue), accent: "from-emerald-500/40 to-green-500/40", icon: "💰" }
+    { label: "Total Users", value: overview.total_users, accent: "from-blue-500/40 to-cyan-500/40", icon: "👥", link: "/admin/users" },
+    { label: "Total Restaurants", value: overview.total_restaurants, accent: "from-orange-500/40 to-amber-500/40", icon: "🍽️", link: "/admin/restaurants" },
+    { label: "Total Orders", value: overview.total_orders, accent: "from-purple-500/40 to-pink-500/40", icon: "📦", link: "/admin/orders" },
+    { label: "Total Revenue", value: formatCurrency(overview.total_revenue), accent: "from-emerald-500/40 to-green-500/40", icon: "💰", link: "/admin/revenue" }
   ];
+
+  const handleCardClick = (link) => {
+    if (link) {
+      window.location.href = link;
+    }
+  };
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {cards.map((card, idx) => (
         <div
           key={idx}
-          className={`rounded-2xl border border-white/10 bg-gradient-to-br ${card.accent} p-6 shadow-lg shadow-black/30`}
+          onClick={() => handleCardClick(card.link)}
+          className={`rounded-2xl border border-gray-200 bg-gradient-to-br ${card.accent} p-6 shadow-lg ${card.link ? 'cursor-pointer hover:scale-[1.02] transition-transform' : ''}`}
         >
           <div className="flex items-center justify-between">
-            <p className="text-sm uppercase tracking-wider text-gray-200/80">{card.label}</p>
+            <p className="text-sm uppercase tracking-wider text-white/90">{card.label}</p>
             <span className="text-2xl">{card.icon}</span>
           </div>
           <p className="mt-3 text-3xl font-bold text-white">{typeof card.value === 'string' ? card.value : card.value.toLocaleString()}</p>
@@ -183,21 +190,21 @@ function RevenueSection({ revenue }) {
   ];
 
   return (
-    <section className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-black/30">
-      <h2 className="text-xl font-semibold text-white mb-4">Revenue Analytics</h2>
+    <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-xl">
+      <h2 className="text-xl font-semibold text-gray-900 mb-4">Revenue Analytics</h2>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-6">
         {revenueCards.map((card, idx) => (
-          <div key={idx} className="rounded-xl border border-white/5 bg-white/5 p-4">
-            <p className="text-xs uppercase tracking-wider text-gray-400">{card.label}</p>
-            <p className="mt-2 text-2xl font-bold text-white">{formatCurrency(card.value)}</p>
+          <div key={idx} className="rounded-xl border border-gray-100 bg-gray-50 p-4">
+            <p className="text-xs uppercase tracking-wider text-gray-500">{card.label}</p>
+            <p className="mt-2 text-2xl font-bold text-gray-900">{formatCurrency(card.value)}</p>
           </div>
         ))}
       </div>
 
       {revenue.trend && revenue.trend.length > 0 && (
         <div>
-          <h3 className="text-sm font-semibold text-gray-300 mb-3">7-Day Revenue Trend</h3>
+          <h3 className="text-sm font-semibold text-gray-700 mb-3">7-Day Revenue Trend</h3>
           <RevenueTrendChart data={revenue.trend} />
         </div>
       )}
@@ -215,8 +222,8 @@ function RevenueTrendChart({ data }) {
         return (
           <div key={idx} className="space-y-1">
             <div className="flex justify-between text-sm">
-              <span className="text-gray-300">{item.date}</span>
-              <span className="text-white font-semibold">{formatCurrency(item.revenue || 0)}</span>
+              <span className="text-gray-600">{item.date}</span>
+              <span className="text-gray-900 font-semibold">{formatCurrency(item.revenue || 0)}</span>
             </div>
             <div className="h-3 bg-white/10 rounded-full overflow-hidden">
               <div
@@ -233,21 +240,21 @@ function RevenueTrendChart({ data }) {
 
 function UserStatsCard({ users }) {
   const stats = [
-    { label: "Customers", value: users.customers, color: "text-blue-300" },
-    { label: "Vendors", value: users.vendors, color: "text-orange-300" },
-    { label: "Riders", value: users.riders, color: "text-green-300" },
-    { label: "New Today", value: users.new_today, color: "text-purple-300" },
-    { label: "New This Week", value: users.new_this_week, color: "text-pink-300" },
-    { label: "New This Month", value: users.new_this_month, color: "text-cyan-300" }
+    { label: "Customers", value: users.customers, color: "text-blue-600" },
+    { label: "Vendors", value: users.vendors, color: "text-orange-600" },
+    { label: "Riders", value: users.riders, color: "text-green-600" },
+    { label: "New Today", value: users.new_today, color: "text-purple-600" },
+    { label: "New This Week", value: users.new_this_week, color: "text-pink-600" },
+    { label: "New This Month", value: users.new_this_month, color: "text-cyan-600" }
   ];
 
   return (
-    <section className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-black/30">
-      <h2 className="text-xl font-semibold text-white mb-4">User Statistics</h2>
+    <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-xl">
+      <h2 className="text-xl font-semibold text-gray-900 mb-4">User Statistics</h2>
       <div className="space-y-3">
         {stats.map((stat, idx) => (
-          <div key={idx} className="flex justify-between items-center rounded-xl border border-white/5 bg-white/5 p-3">
-            <span className="text-sm text-gray-300">{stat.label}</span>
+          <div key={idx} className="flex justify-between items-center rounded-xl border border-gray-100 bg-gray-50 p-3">
+            <span className="text-sm text-gray-600">{stat.label}</span>
             <span className={`text-xl font-bold ${stat.color}`}>{stat.value}</span>
           </div>
         ))}
@@ -258,21 +265,21 @@ function UserStatsCard({ users }) {
 
 function RestaurantStatsCard({ restaurants }) {
   const stats = [
-    { label: "Total", value: restaurants.total, color: "text-white" },
-    { label: "Pending Approval", value: restaurants.pending, color: "text-yellow-300" },
-    { label: "Approved", value: restaurants.approved, color: "text-green-300" },
-    { label: "Suspended", value: restaurants.suspended, color: "text-red-300" },
-    { label: "New Today", value: restaurants.new_today, color: "text-purple-300" },
-    { label: "New This Week", value: restaurants.new_this_week, color: "text-cyan-300" }
+    { label: "Total", value: restaurants.total, color: "text-gray-900" },
+    { label: "Pending Approval", value: restaurants.pending, color: "text-yellow-600" },
+    { label: "Approved", value: restaurants.approved, color: "text-green-600" },
+    { label: "Suspended", value: restaurants.suspended, color: "text-red-600" },
+    { label: "New Today", value: restaurants.new_today, color: "text-purple-600" },
+    { label: "New This Week", value: restaurants.new_this_week, color: "text-cyan-600" }
   ];
 
   return (
-    <section className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-black/30">
-      <h2 className="text-xl font-semibold text-white mb-4">Restaurant Statistics</h2>
+    <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-xl">
+      <h2 className="text-xl font-semibold text-gray-900 mb-4">Restaurant Statistics</h2>
       <div className="space-y-3">
         {stats.map((stat, idx) => (
-          <div key={idx} className="flex justify-between items-center rounded-xl border border-white/5 bg-white/5 p-3">
-            <span className="text-sm text-gray-300">{stat.label}</span>
+          <div key={idx} className="flex justify-between items-center rounded-xl border border-gray-100 bg-gray-50 p-3">
+            <span className="text-sm text-gray-600">{stat.label}</span>
             <span className={`text-xl font-bold ${stat.color}`}>{stat.value}</span>
           </div>
         ))}
@@ -297,15 +304,15 @@ function OrderStatsCard({ orders }) {
   ];
 
   return (
-    <section className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-black/30">
-      <h2 className="text-xl font-semibold text-white mb-4">Order Statistics</h2>
+    <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-xl">
+      <h2 className="text-xl font-semibold text-gray-900 mb-4">Order Statistics</h2>
 
       <div className="mb-6">
-        <h3 className="text-sm font-semibold text-gray-400 mb-3 uppercase">By Status</h3>
+        <h3 className="text-sm font-semibold text-gray-600 mb-3 uppercase">By Status</h3>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
           {statusCards.map((card, idx) => (
-            <div key={idx} className={`rounded-xl border border-white/10 bg-gradient-to-br ${card.color} p-4`}>
-              <p className="text-xs uppercase tracking-wider text-gray-200">{card.label}</p>
+            <div key={idx} className={`rounded-xl border border-gray-200 bg-gradient-to-br ${card.color} p-4`}>
+              <p className="text-xs uppercase tracking-wider text-white/90">{card.label}</p>
               <p className="mt-2 text-2xl font-bold text-white">{card.value}</p>
             </div>
           ))}
@@ -316,9 +323,9 @@ function OrderStatsCard({ orders }) {
         <h3 className="text-sm font-semibold text-gray-400 mb-3 uppercase">By Period</h3>
         <div className="grid grid-cols-3 gap-4">
           {periodCards.map((card, idx) => (
-            <div key={idx} className="rounded-xl border border-white/5 bg-white/5 p-4">
-              <p className="text-xs uppercase tracking-wider text-gray-400">{card.label}</p>
-              <p className="mt-2 text-2xl font-bold text-white">{card.value}</p>
+            <div key={idx} className="rounded-xl border border-gray-100 bg-gray-50 p-4">
+              <p className="text-xs uppercase tracking-wider text-gray-500">{card.label}</p>
+              <p className="mt-2 text-2xl font-bold text-gray-900">{card.value}</p>
             </div>
           ))}
         </div>
@@ -336,16 +343,16 @@ function PlatformMetricsCard({ metrics }) {
   ];
 
   return (
-    <section className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-black/30">
-      <h2 className="text-xl font-semibold text-white mb-4">Platform Metrics</h2>
+    <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-xl">
+      <h2 className="text-xl font-semibold text-gray-900 mb-4">Platform Metrics</h2>
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {metricCards.map((metric, idx) => (
-          <div key={idx} className="rounded-xl border border-white/5 bg-white/5 p-4">
+          <div key={idx} className="rounded-xl border border-gray-200 bg-gray-50 p-4">
             <div className="flex items-center justify-between mb-2">
-              <p className="text-xs uppercase tracking-wider text-gray-400">{metric.label}</p>
+              <p className="text-xs uppercase tracking-wider text-gray-500">{metric.label}</p>
               <span className="text-xl">{metric.icon}</span>
             </div>
-            <p className="text-2xl font-bold text-white">{metric.value}</p>
+            <p className="text-2xl font-bold text-gray-900">{metric.value}</p>
           </div>
         ))}
       </div>
@@ -355,24 +362,24 @@ function PlatformMetricsCard({ metrics }) {
 
 function RecentOrders({ orders = [] }) {
   return (
-    <section className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-black/30">
-      <h2 className="text-xl font-semibold text-white mb-4">Recent Orders</h2>
+    <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-xl">
+      <h2 className="text-xl font-semibold text-gray-900 mb-4">Recent Orders</h2>
 
       {orders.length === 0 ? (
         <EmptyState message="No recent orders" />
       ) : (
         <div className="space-y-3 max-h-96 overflow-y-auto">
           {orders.map(order => (
-            <div key={order.id} className="rounded-xl border border-white/5 bg-white/5 p-3">
+            <div key={order.id} className="rounded-xl border border-gray-100 bg-gray-50 p-3">
               <div className="flex justify-between items-center mb-1">
-                <span className="text-xs font-mono text-gray-400">#{order.id}</span>
+                <span className="text-xs font-mono text-gray-500">#{order.id}</span>
                 <OrderStatusPill status={order.status} />
               </div>
-              <p className="text-sm text-white font-medium">{order.customer}</p>
-              <p className="text-xs text-gray-400">{order.restaurant}</p>
+              <p className="text-sm text-gray-900 font-medium">{order.customer}</p>
+              <p className="text-xs text-gray-600">{order.restaurant}</p>
               <div className="flex justify-between items-center mt-2">
-                <span className="text-white font-bold">{formatCurrency(order.total_amount)}</span>
-                <span className="text-xs text-gray-400">{formatDateTime(order.placed_at)}</span>
+                <span className="text-gray-900 font-bold">{formatCurrency(order.total_amount)}</span>
+                <span className="text-xs text-gray-600">{formatDateTime(order.placed_at)}</span>
               </div>
             </div>
           ))}
@@ -434,11 +441,11 @@ function RecentRestaurants({ restaurants = [] }) {
 
 function OrderStatusPill({ status }) {
   const statusColors = {
-    pending: "bg-yellow-500/20 text-yellow-200",
-    preparing: "bg-orange-500/20 text-orange-200",
-    out_for_delivery: "bg-blue-500/20 text-blue-200",
-    completed: "bg-emerald-500/20 text-emerald-200",
-    cancelled: "bg-red-500/20 text-red-200"
+    pending: "bg-yellow-100 text-yellow-700",
+    preparing: "bg-orange-100 text-orange-700",
+    out_for_delivery: "bg-blue-100 text-blue-700",
+    completed: "bg-emerald-100 text-emerald-700",
+    cancelled: "bg-red-100 text-red-700"
   };
 
   const color = statusColors[status] || statusColors.pending;
@@ -452,9 +459,9 @@ function OrderStatusPill({ status }) {
 
 function RoleBadge({ role }) {
   const roleColors = {
-    customer: "bg-blue-500/20 text-blue-200",
-    vendor: "bg-orange-500/20 text-orange-200",
-    rider: "bg-green-500/20 text-green-200"
+    customer: "bg-blue-100 text-blue-700",
+    vendor: "bg-orange-100 text-orange-700",
+    rider: "bg-green-100 text-green-700"
   };
 
   const color = roleColors[role] || roleColors.customer;
@@ -468,9 +475,9 @@ function RoleBadge({ role }) {
 
 function StatusBadge({ status }) {
   const statusConfig = {
-    pending: { color: "bg-yellow-500/20 text-yellow-200" },
-    approved: { color: "bg-green-500/20 text-green-200" },
-    suspended: { color: "bg-red-500/20 text-red-200" }
+    pending: { color: "bg-yellow-100 text-yellow-700" },
+    approved: { color: "bg-green-100 text-green-700" },
+    suspended: { color: "bg-red-100 text-red-700" }
   };
 
   const config = statusConfig[status] || statusConfig.pending;
@@ -484,7 +491,7 @@ function StatusBadge({ status }) {
 
 function EmptyState({ message }) {
   return (
-    <div className="rounded-xl border border-dashed border-white/10 bg-white/5 px-4 py-8 text-center text-sm text-gray-300">
+    <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50 px-4 py-8 text-center text-sm text-gray-500">
       {message}
     </div>
   );
@@ -493,7 +500,7 @@ function EmptyState({ message }) {
 function formatCurrency(value) {
   const numericValue = Number(value);
   if (!Number.isFinite(numericValue)) return "$0.00";
-  return new Intl.NumberFormat(undefined, { style: "currency", currency: "USD" }).format(numericValue);
+  return new Intl.NumberFormat(undefined, { style: "currency", currency: "PKR" }).format(numericValue);
 }
 
 function formatDateTime(value) {
@@ -508,18 +515,18 @@ function formatDateTime(value) {
 
 function LogoutPanel({ onLogout, loggingOut, error }) {
   return (
-    <section className="rounded-3xl border border-white/10 bg-gradient-to-r from-white/10 via-white/5 to-white/0 p-6 text-center shadow-xl shadow-black/30">
-      <h2 className="text-xl font-semibold text-white">Finished managing the platform?</h2>
-      <p className="mt-2 text-sm text-gray-300">You can return to the admin panel anytime to monitor operations.</p>
+    <section className="rounded-3xl border border-gray-200 bg-white p-6 text-center shadow-xl">
+      <h2 className="text-xl font-semibold text-gray-900">Finished managing the platform?</h2>
+      <p className="mt-2 text-sm text-gray-600">You can return to the admin panel anytime to monitor operations.</p>
       <button
         type="button"
         onClick={onLogout}
         disabled={loggingOut}
-        className="mt-5 inline-flex items-center justify-center rounded-2xl bg-red-500 px-6 py-3 text-base font-semibold text-white shadow-lg shadow-red-900/40 transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70"
+        className="mt-5 inline-flex items-center justify-center rounded-2xl bg-red-500 px-6 py-3 text-base font-semibold text-white shadow-lg shadow-red-200 transition hover:-translate-y-0.5 hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-70"
       >
         {loggingOut ? "Signing out…" : "Log out"}
       </button>
-      {error && <p className="mt-3 text-sm text-red-300">{error}</p>}
+      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
     </section>
   );
 }

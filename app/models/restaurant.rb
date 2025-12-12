@@ -3,4 +3,7 @@ class Restaurant < ApplicationRecord
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
+
+  has_many :menus, dependent: :destroy
+  has_many :menu_items, through: :menus
 end

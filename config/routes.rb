@@ -21,6 +21,10 @@ Rails.application.routes.draw do
   namespace :restaurants do
     root to: "dashboard#index"
     get "dashboard", to: "dashboard#index"
+
+    resources :menus do
+      resources :menu_items, except: :index
+    end
   end
 
   namespace :admin do
@@ -28,7 +32,13 @@ Rails.application.routes.draw do
     get "dashboard", to: "dashboard#index"
 
     resources :users
-    resources :restaurants
+    resources :restaurants do
+      member do
+        patch :approve
+      end
+    end
     resources :orders
   end
+
+  resources :restaurants, only: :show
 end
