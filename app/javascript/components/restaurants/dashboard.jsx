@@ -99,6 +99,7 @@ function RestaurantDashboard({ initialData = {} }) {
 
         {!loading && !error && (
           <>
+            <MenuManagementPanel />
             <SalesCards sales={sales} />
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -114,6 +115,7 @@ function RestaurantDashboard({ initialData = {} }) {
               <RecentOrders orders={dashboard.recent_orders} />
               <TopItems items={dashboard.top_items} />
             </div>
+
 
             <LogoutPanel
               onLogout={handleLogout}
@@ -324,6 +326,28 @@ function TopItems({ items = [] }) {
   );
 }
 
+function MenuManagementPanel() {
+  return (
+    <section className="rounded-3xl border border-gray-200 bg-gradient-to-br from-orange-50 to-white p-6 shadow-lg">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+          <p className="text-sm uppercase tracking-[0.3em] text-orange-400">Menus</p>
+          <h2 className="text-2xl font-semibold text-gray-900">Keep your dishes up to date</h2>
+          <p className="mt-2 text-gray-600">
+            Add breakfast, lunch, or dinner menus, create dishes, and toggle availability when items sell out.
+          </p>
+        </div>
+        <a
+          href="/restaurants/menus"
+          className="inline-flex items-center justify-center rounded-full bg-orange-500 px-6 py-3 text-white font-semibold shadow hover:bg-orange-600"
+        >
+          Manage menus
+        </a>
+      </div>
+    </section>
+  );
+}
+
 function StatusBadge({ status }) {
   const statusConfig = {
     pending: { label: "Pending Approval", color: "bg-yellow-100 text-yellow-700 border-yellow-300" },
@@ -370,7 +394,7 @@ function EmptyState({ message }) {
 function formatCurrency(value) {
   const numericValue = Number(value);
   if (!Number.isFinite(numericValue)) return "$0.00";
-  return new Intl.NumberFormat(undefined, { style: "currency", currency: "USD" }).format(numericValue);
+  return new Intl.NumberFormat(undefined, { style: "currency", currency: "PKR" }).format(numericValue);
 }
 
 function formatDateTime(value) {

@@ -20,6 +20,7 @@ class DashboardController < ApplicationController
       recent_orders: recent_orders_payload,
       saved_addresses: saved_addresses_payload,
       recommended_restaurants: recommended,
+      featured_dishes: featured_dishes_payload,
       quick_actions: quick_actions_payload,
       auth_paths: auth_paths_payload
     }
@@ -81,7 +82,7 @@ class DashboardController < ApplicationController
         }
       end
     else
-      sample_recent_orders
+      []
     end
   end
 
@@ -99,24 +100,53 @@ class DashboardController < ApplicationController
         }
       end
     else
-      sample_saved_addresses
+      []
     end
   end
 
   def recommended_restaurants_payload
     if defined?(Restaurant)
-      Restaurant.limit(4).map do |restaurant|
+      Restaurant.includes(menus: :menu_items).limit(4).map do |restaurant|
         {
           id: restaurant.id,
           name: restaurant.try(:name),
-          cuisine: restaurant.try(:cuisine),
+          cuisine: restaurant.try(:cuisine_type) || restaurant.try(:cuisine),
           rating: restaurant.try(:rating),
-          eta: restaurant.try(:estimated_delivery_time),
-          image_url: restaurant.try(:cover_image_url)
+          eta: delivery_eta_for(restaurant),
+          image_url: restaurant.try(:cover_image_url),
+          path: helpers.restaurant_path(restaurant),
+          signature_dishes: restaurant.menu_items.available.limit(3).map do |item|
+            {
+              id: item.id,
+              name: item.name,
+              price: item.price,
+              currency: item.currency
+            }
+          end
         }
       end
     else
-      sample_recommended_restaurants
+      []
+    end
+  end
+
+  def featured_dishes_payload
+    if defined?(MenuItem)
+      MenuItem.available.includes(menu: :restaurant).order(created_at: :desc).limit(6).map do |item|
+        {
+          id: item.id,
+          name: item.name,
+          description: item.description,
+          price: item.price,
+          currency: item.currency,
+          image_url: item.image_url,
+          restaurant_name: item.restaurant&.name,
+          restaurant_id: item.restaurant&.id,
+          restaurant_path: item.restaurant.present? ? helpers.restaurant_path(item.restaurant) : nil
+        }
+      end
+    else
+      []
     end
   end
 
@@ -156,88 +186,13 @@ class DashboardController < ApplicationController
     defined?(Order) && current_user&.respond_to?(:orders)
   end
 
-  def sample_recent_orders
-    [
-      {
-        id: "FD-1207",
-        restaurant: "Spice Route Kitchen",
-        total: 28.95,
-        status: "Out for delivery",
-        eta: "15 mins",
-        placed_at: 25.minutes.ago
-      },
-      {
-        id: "FD-1206",
-        restaurant: "Sushi & Co.",
-        total: 42.10,
-        status: "Delivered",
-        eta: nil,
-        placed_at: 2.days.ago
-      },
-      {
-        id: "FD-1205",
-        restaurant: "Harvest Bowl",
-        total: 18.75,
-        status: "Delivered",
-        eta: nil,
-        placed_at: 4.days.ago
-      }
-    ]
-  end
-
-  def sample_saved_addresses
-    [
-      {
-        id: "home",
-        label: "Home",
-        street: "123 Market Street",
-        city: "San Francisco, CA",
-        instructions: "Ring bell and leave at the door"
-      },
-      {
-        id: "office",
-        label: "Office",
-        street: "500 Mission Street",
-        city: "San Francisco, CA",
-        instructions: "Call when you arrive"
-      }
-    ]
-  end
-
-  def sample_recommended_restaurants
-    [
-      {
-        id: "rec-1",
-        name: "Coastal Thai",
-        cuisine: "Thai",
-        rating: 4.9,
-        eta: "20-30 min",
-        image_url: nil
-      },
-      {
-        id: "rec-2",
-        name: "Nori Sushi Bar",
-        cuisine: "Japanese",
-        rating: 4.7,
-        eta: "30-40 min",
-        image_url: nil
-      },
-      {
-        id: "rec-3",
-        name: "Luna Pizzeria",
-        cuisine: "Italian",
-        rating: 4.5,
-        eta: "25-35 min",
-        image_url: nil
-      },
-      {
-        id: "rec-4",
-        name: "Harvest Bowls",
-        cuisine: "Healthy",
-        rating: 4.8,
-        eta: "15-25 min",
-        image_url: nil
-      }
-    ]
+  def delivery_eta_for(restaurant)
+    if restaurant.try(:delivery_time_minutes).present?
+      "#{restaurant.delivery_time_minutes} min"
+    elsif restaurant.try(:pickup_time_minutes).present?
+      "#{restaurant.pickup_time_minutes} min"
+    else
+      restaurant.try(:estimated_delivery_time)
+    end
   end
 end
