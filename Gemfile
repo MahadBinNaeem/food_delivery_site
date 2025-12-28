@@ -34,4 +34,4 @@ gem "react_on_rails", "~> 14.1"
 gem "devise"
 gem "devise-jwt"
 gem "pundit"
-gem "brakeman", require: false
+gem "brakeman"
