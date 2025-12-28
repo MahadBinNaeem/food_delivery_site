@@ -109,7 +109,7 @@
                       <% end %>
 
                       <% if restaurant.pending? %>
-                        <%= button_to "Approve", approve_admin_restaurant_path(restaurant, status: :approve), method: :patch, class: "inline-flex items-center justify-center rounded-lg bg-green-500/20 px-3 py-1.5 text-xs font-semibold text-green-200 hover:bg-green-500/30 transition", form: { data: { turbo_confirm: "Are you sure you want to approve this restaurant?" } } %>
+                        <%= button_to "Approve", approve_admin_restaurant_path(restaurant, status: :approved), method: :patch, class: "inline-flex items-center justify-center rounded-lg bg-green-500/20 px-3 py-1.5 text-xs font-semibold text-green-200 hover:bg-green-500/30 transition", form: { data: { turbo_confirm: "Are you sure you want to approve this restaurant?" } } %>
                         <%= button_to "Suspend", approve_admin_restaurant_path(restaurant, status: :suspended), method: :patch, class: "inline-flex items-center justify-center rounded-lg bg-red-500/20 px-3 py-1.5 text-xs font-semibold text-green-200 hover:bg-green-500/30 transition", form: { data: { turbo_confirm: "Are you sure you want to suspend this restaurant?" } } %>
                       <% end %>
 
