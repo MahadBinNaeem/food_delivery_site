@@ -3,7 +3,7 @@ source "https://rubygems.org"
 
 # Core Rails
 gem "rails", "~> 7.2"
-gem "pg", "~> 1.1"
+gem "pg", "~> 1.6"
 gem "puma", "~> 6.0"
 gem "bootsnap", require: false
 
